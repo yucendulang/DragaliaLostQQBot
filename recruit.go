@@ -6,6 +6,7 @@ import (
 	iotqq "iotqq-plugins-demo/Go/model"
 	"iotqq-plugins-demo/Go/random"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -29,15 +30,23 @@ type Member struct {
 	Nickname string
 }
 
-type recruitManager []*Recruit
+type recruitManager struct {
+	recruits map[int]*Recruit
+	sync.Mutex
+}
 
-var manager recruitManager
+var manager = recruitManager{
+	recruits: make(map[int]*Recruit),
+	Mutex:    sync.Mutex{},
+}
 
 func CreateRecruit(wantedNum int, questName string) *Recruit {
 	i := 1
+	manager.Lock()
+	defer manager.Unlock()
 	for ; i < 100; i++ {
 		var flag bool
-		for _, recruit := range manager {
+		for _, recruit := range manager.recruits {
 			if recruit.questID == i {
 				flag = true
 				break
@@ -54,36 +63,44 @@ func CreateRecruit(wantedNum int, questName string) *Recruit {
 		close:     make(chan bool),
 		shout:     make(chan bool),
 	}
-	manager = append(manager, res)
+	manager.recruits[res.questID] = res
 	return res
 }
 
 func GetRecruit(questid int) *Recruit {
-	for i, i2 := range manager {
+	for i, i2 := range manager.recruits {
 		if i2.questID == questid {
-			return manager[i]
+			return manager.recruits[i]
 		}
 	}
 	return nil
 }
 
-func CancelAllRecruit() {
-	for i, _ := range manager {
-		manager[i].close <- false
+func CancelAllRecruit(member int64) {
+	manager.Lock()
+	defer manager.Unlock()
+	for i := range manager.recruits {
+		if manager.recruits[i].member[0].QQ == member {
+			fmt.Println("head is off.break the car")
+			manager.recruits[i].close <- false
+			continue
+		}
+		for j := range manager.recruits[i].member {
+			if manager.recruits[i].member[j].QQ == member {
+				l := len(manager.recruits[i].member)
+				manager.recruits[i].member[l-1], manager.recruits[i].member[j] = manager.recruits[i].member[j], manager.recruits[i].member[l-1]
+				manager.recruits[i].member = manager.recruits[i].member[:l-1]
+				manager.recruits[i].shout <- true
+			}
+		}
 	}
-	manager = []*Recruit{}
 }
 
 func (r *Recruit) CancelRecruit(close bool) {
-	for i, _ := range manager {
-		if manager[i].questID == r.questID {
-			manager[len(manager)-1], manager[i] = manager[i], manager[len(manager)-1]
-			manager = manager[:len(manager)-1]
-			r.close <- close
-			return
-		}
-	}
-	fmt.Println("It should not be here")
+	manager.Lock()
+	manager.Unlock()
+	delete(manager.recruits, r.questID)
+	r.close <- close
 }
 
 func (r *Recruit) ParticipateRecruit(member Member) {
@@ -107,7 +124,7 @@ func (r *Recruit) ParticipateRecruit(member Member) {
 }
 
 func (r *Recruit) GetRecruitAd() string {
-	res := fmt.Sprintf("%s招募中,缺%d人\n输入%d报名,输入c取消该车\n", r.questName, r.wantedNum, r.questID)
+	res := fmt.Sprintf("%s招募中,缺%d人\n输入%d报名,车头输入c取消该车,其他人输入c下车\n", r.questName, r.wantedNum, r.questID)
 	var p []string
 	for _, member := range r.member {
 		p = append(p, member.Nickname)
@@ -118,7 +135,6 @@ func (r *Recruit) GetRecruitAd() string {
 
 func (r *Recruit) TryRecruit() {
 	go func() {
-
 		t := time.Tick(period * time.Second)
 		res := r.GetRecruitAd()
 		iotqq.Send(r.qqgroupid, 2, res)
@@ -139,6 +155,9 @@ func (r *Recruit) TryRecruit() {
 				} else {
 					iotqq.Send(r.qqgroupid, 2, "有内鬼!终止发车!")
 				}
+				manager.Lock()
+				delete(manager.recruits, r.questID)
+				manager.Unlock()
 				break m
 			}
 		}

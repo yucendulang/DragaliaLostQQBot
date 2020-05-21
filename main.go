@@ -111,25 +111,25 @@ func main() {
 		}
 
 		if util.KeyWordTrigger(mess.Content, "十连") {
-			if SummonALot(mess, nickName, 10, summon.TenSummon) {
+			if SummonALot(mess, 10, summon.TenSummon) {
 				return
 			}
 		}
 
 		if util.KeyWordTrigger(mess.Content, "百连") {
-			if SummonALot(mess, nickName, 100, summon.GetMultiSummon(100)) {
+			if SummonALot(mess, 100, summon.GetMultiSummon(100)) {
 				return
 			}
 		}
 
 		if util.KeyWordTrigger(mess.Content, "千连") {
-			if SummonALot(mess, nickName, 1000, summon.GetMultiSummon(1000)) {
+			if SummonALot(mess, 1000, summon.GetMultiSummon(1000)) {
 				return
 			}
 		}
 
 		if util.KeyWordTrigger(mess.Content, "万连") {
-			if SummonALot(mess, nickName, 10000, summon.GetMultiSummon(10000)) {
+			if SummonALot(mess, 10000, summon.GetMultiSummon(10000)) {
 				return
 			}
 		}
@@ -202,7 +202,7 @@ func main() {
 		}
 
 		if mess.Content == "c" {
-			CancelAllRecruit()
+			CancelAllRecruit(mess.FromUserID)
 		}
 
 		plugin.FactoryInstance.Run(mess)
@@ -243,10 +243,10 @@ home:
 	time.Sleep(600 * time.Second)
 	model.SendJoin(c, qq)
 	goto home
-	log.Println(" [x] Complete")
+	//log.Println(" [x] Complete")
 }
 
-func SummonALot(mess model.Data, nickName string, num int, summon func(*userData.User) summon.SummonRecord) bool {
+func SummonALot(mess model.Data, num int, summon func(*userData.User) summon.SummonRecord) bool {
 	user := userData.GetUser(mess.FromUserID)
 	if user.SummonCardNum >= num {
 		res := summon(user)
