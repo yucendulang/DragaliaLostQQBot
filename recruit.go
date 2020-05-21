@@ -90,7 +90,9 @@ func CancelAllRecruit(member int64) {
 				l := len(manager.recruits[i].member)
 				manager.recruits[i].member[l-1], manager.recruits[i].member[j] = manager.recruits[i].member[j], manager.recruits[i].member[l-1]
 				manager.recruits[i].member = manager.recruits[i].member[:l-1]
+				manager.recruits[i].wantedNum++
 				manager.recruits[i].shout <- true
+				break
 			}
 		}
 	}
