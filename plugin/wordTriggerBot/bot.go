@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	plugin.FactoryInstance.RegisterPlugin(&wordTriggerBot{1, sync.Mutex{}})
+	plugin.FactoryInstance.RegisterPlugin(&wordTriggerBot{7, sync.Mutex{}})
 }
 
 type wordTriggerBot struct {

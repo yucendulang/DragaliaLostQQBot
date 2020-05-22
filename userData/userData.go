@@ -84,12 +84,12 @@ func UserDataLoad() {
 		if info.IsDir() {
 			return nil
 		}
-		fmt.Println(path)
+		fmt.Println("userdata path is " + path)
 		b, err := ioutil.ReadFile(path)
 		if err != nil {
 			fmt.Println("could not open file", err)
 		}
-		fmt.Println("filecontent is ", string(b))
+		//fmt.Println("filecontent is ", string(b))
 		var user User
 		err = json.Unmarshal(b, &user)
 		if err != nil {

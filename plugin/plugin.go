@@ -93,17 +93,19 @@ func (f Factory) Run(data model.Data) {
 		r, vNext := p.IsTrigger(req)
 		if r {
 			res := p.Process(req)
-			if res.PicUrl != "" {
-				model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
-			} else if res.Content != "" {
-				model.Send(data.FromGroupID, 2, res.Content)
-			}
-			if res.DelayFunc != nil {
-				go func() {
-					fmt.Printf("enter DelayFunc")
-					outStr := res.DelayFunc()
-					model.Send(data.FromGroupID, 2, outStr)
-				}()
+			if res != nil {
+				if res.PicUrl != "" {
+					model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
+				} else if res.Content != "" {
+					model.Send(data.FromGroupID, 2, res.Content)
+				}
+				if res.DelayFunc != nil {
+					go func() {
+						fmt.Printf("enter DelayFunc")
+						outStr := res.DelayFunc()
+						model.Send(data.FromGroupID, 2, outStr)
+					}()
+				}
 			}
 		}
 		if !vNext {

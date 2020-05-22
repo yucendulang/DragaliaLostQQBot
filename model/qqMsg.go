@@ -10,6 +10,7 @@ type QQMsg struct {
 
 type GroupPic struct {
 	FileMd5 string
+	Url     string
 }
 
 func NewQQMsg(msg string) (*QQMsg, error) {

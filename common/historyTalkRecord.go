@@ -3,8 +3,8 @@ package common
 import (
 	"container/list"
 	"encoding/json"
-	"expvar"
 	"fmt"
+	"iotqq-plugins-demo/Go/util"
 	"sync"
 )
 
@@ -14,7 +14,7 @@ var HistoryRecord = historyTalkRecord{
 }
 
 func init() {
-	expvar.Publish("HistroyRecord", &HistoryRecord)
+	util.SaveRamVar("HistroyRecord", &HistoryRecord)
 }
 
 type historyTalkRecord struct {

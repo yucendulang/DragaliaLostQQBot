@@ -10,6 +10,7 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/helpBot"
 	_ "iotqq-plugins-demo/Go/plugin/repeatBot"
 	_ "iotqq-plugins-demo/Go/plugin/repeatV2Bot"
+	_ "iotqq-plugins-demo/Go/plugin/statisticsBot"
 	_ "iotqq-plugins-demo/Go/plugin/stickerBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/announceBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/collectorBot"
@@ -48,6 +49,8 @@ func main() {
 	common.ThreeStarDragonNum = cards.GetCardsNumByStarType(3, 2)
 
 	userData.UserDataLoad()
+	util.SignalNotify()
+	util.RestoreRamVar()
 	recruitexp := regexp.MustCompile("招募(.*)缺([0-9])")
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
 	buildCommand := regexp.MustCompile("\"@修玛吉亚-Du 建造(.*?)\"")
