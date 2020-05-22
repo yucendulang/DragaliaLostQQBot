@@ -21,7 +21,7 @@ func (r *wordTriggerBot) Priority() int {
 }
 
 func (r *wordTriggerBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
-	if req.Content == "" {
+	if req.Content == "" && len(req.GroupPics) == 0 {
 		return false, true
 	}
 	r.mx.Lock()
@@ -31,8 +31,16 @@ func (r *wordTriggerBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		if state.triggerTimes > state.times || state.coolDown > time.Since(state.lastTriggerTime) {
 			continue
 		}
-		if state.regex.MatchString(req.Content) {
+		if state.regex != nil && state.regex.MatchString(req.Content) {
 			if rand.Intn(100) < state.probability {
+				req.ExtraInfo = state.response
+				state.triggerTimes++
+				state.lastTriggerTime = time.Now()
+				return true, false
+			}
+		}
+		for _, pic := range req.GroupPics {
+			if pic.FileMd5 == state.FileMd5 {
 				req.ExtraInfo = state.response
 				state.triggerTimes++
 				state.lastTriggerTime = time.Now()

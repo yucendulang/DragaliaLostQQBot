@@ -12,6 +12,7 @@ type wordTriggerRule struct {
 	times       int
 	coolDown    time.Duration
 	response    string
+	FileMd5     string
 }
 
 type wordTriggerState struct {
@@ -32,13 +33,23 @@ func init() {
 	NewRule("(.*?)有(.*?)妹妹", "反正我没有妹妹...想要一个妹妹..", 100, math.MaxInt64, time.Hour*12)
 	NewRule("有(.*?)车[吗嘛]", "我帮你招募一下如何?", 100, math.MaxInt64, time.Minute*5)
 	NewRule("^\\?$", "为什么要单打一个问号呢？你有遇上什么烦恼吗，或许我可以帮你...", 80, math.MaxInt64, time.Minute*5)
+	NewRuleBase("", "给您弱智+450呢!", "RD+bUdp1MMNEMHtCYmEtTQ==", 100, math.MaxInt64, time.Second*5)
 }
 
-func NewRule(regex, resp string, probability, times int, coolDown time.Duration) {
-	r := regexp.MustCompile(regex)
+func NewRuleBase(regex, resp, fileMD5 string, probability, times int, coolDown time.Duration) {
+	var r *regexp.Regexp
+	if regex != "" {
+		r = regexp.MustCompile(regex)
+	} else {
+		r = nil
+	}
 	stateList = append(stateList, &wordTriggerState{
-		wordTriggerRule: wordTriggerRule{r, probability, times, coolDown, resp},
+		wordTriggerRule: wordTriggerRule{regex: r, probability: probability, times: times, coolDown: coolDown, response: resp, FileMd5: fileMD5},
 		lastTriggerTime: time.Time{},
 		triggerTimes:    0,
 	})
+}
+
+func NewRule(regex, resp string, probability, times int, coolDown time.Duration) {
+	NewRuleBase(regex, resp, "", probability, times, coolDown)
 }

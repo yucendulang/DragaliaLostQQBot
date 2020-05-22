@@ -3,8 +3,13 @@ package model
 import "encoding/json"
 
 type QQMsg struct {
-	Content string
-	UserID  []int64
+	Content  string
+	UserID   []int64
+	GroupPic []GroupPic
+}
+
+type GroupPic struct {
+	FileMd5 string
 }
 
 func NewQQMsg(msg string) (*QQMsg, error) {

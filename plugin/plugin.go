@@ -20,6 +20,7 @@ type Request struct {
 	NickName  string
 	IsAtMe    bool
 	ExtraInfo interface{}
+	GroupPics []model.GroupPic
 }
 
 type Interface interface {
@@ -67,6 +68,7 @@ func (f Factory) Run(data model.Data) {
 		if msg, err := model.NewQQMsg(data.Content); err != nil {
 			req.Content = data.Content
 		} else {
+			//json 解析成功
 			if util.Int64Contain(f.seftUDID, msg.UserID) {
 				find := AtMsgRegex.FindStringSubmatch(msg.Content)
 				if len(find) > 0 {
@@ -78,7 +80,7 @@ func (f Factory) Run(data model.Data) {
 			} else {
 				req.Content = msg.Content
 			}
-
+			req.GroupPics = msg.GroupPic
 		}
 	} else {
 		req.Content = data.Content
