@@ -344,12 +344,7 @@ func productCardPng(card SummonCard) image.Image {
 
 func GetBlackMask(width, height int) *image.RGBA {
 	blackBar := image.NewRGBA(image.Rect(0, 0, width, height))
-	dx, dy := blackBar.Rect.Dx(), blackBar.Rect.Dy()
-	for i := 0; i < dx; i++ {
-		for j := 0; j < dy; j++ {
-			blackBar.SetRGBA(i, j, color.RGBA{R: 0, G: 0, B: 0, A: 128})
-		}
-	}
+	util.Clear(blackBar, color.RGBA{R: 0, G: 0, B: 0, A: 128})
 	return blackBar
 }
 

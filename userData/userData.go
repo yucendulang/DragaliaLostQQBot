@@ -104,7 +104,7 @@ func UserDataLoad() {
 
 func (u *User) GetAccountInfo() string {
 	res := ""
-	res += fmt.Sprintf("敬爱的殿下,您现在拥有召唤卷:%d🎟,水滴:%d💧", u.SummonCardNum, u.Water)
+	res += fmt.Sprintf("资产一览 召唤卷:%d🎟,水滴:%d💧", u.SummonCardNum, u.Water)
 	return res
 }
 
@@ -127,12 +127,12 @@ func (u *User) GetBuildInfo() string {
 	for _, b := range u.BuildIndex {
 		item = append(item, fmt.Sprintf("%slv%d", building.BuildList[b.Index].Title, b.Level))
 	}
-	res += fmt.Sprintf("敬爱的殿下,您拥有建筑:%s", strings.Join(item, ","))
+	res += fmt.Sprintf("拥有的建筑:%s", strings.Join(item, ","))
 	return res
 }
 
-func (u *User) GetMyHitRate() string {
-	return fmt.Sprintf("敬爱的殿下,您当前的概率为%.1f%%,继续%d次召唤可以提高概率", float32(40+u.UnHitNumber/10*5)/10, 10-u.UnHitNumber%10)
+func (u *User) GetMyHitRate(nickName string) string {
+	return fmt.Sprintf("%s殿下的概率:%.1f%%,继续%d次召唤提高概率", nickName, float32(40+u.UnHitNumber/10*5)/10, 10-u.UnHitNumber%10)
 }
 
 func (u *User) GetHitRate() int {

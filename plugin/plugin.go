@@ -2,6 +2,11 @@ package plugin
 
 import (
 	"fmt"
+	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
+	"github.com/mitchellh/hashstructure"
+	"image"
+	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/model"
 	"iotqq-plugins-demo/Go/util"
 	"regexp"
@@ -12,6 +17,7 @@ import (
 type Result struct {
 	Content   string
 	PicUrl    string
+	Pic       image.Image
 	DelayFunc func() string
 }
 type Request struct {
@@ -98,6 +104,9 @@ func (f Factory) Run(data model.Data) {
 					model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
 				} else if res.Content != "" {
 					model.Send(data.FromGroupID, 2, res.Content)
+				} else if res.Pic != nil {
+					url := printShuiYin(res, req)
+					model.SendPic(data.FromGroupID, 2, res.Content, url)
 				}
 				if res.DelayFunc != nil {
 					go func() {
@@ -112,4 +121,24 @@ func (f Factory) Run(data model.Data) {
 			return
 		}
 	}
+}
+
+func printShuiYin(res *Result, req *Request) string {
+	face := truetype.NewFace(common.Font, &truetype.Options{Size: 24})
+	dc := gg.NewContextForImage(res.Pic)
+	//dc.SetRGB(1, 1, 1)
+	//dc.Clear()
+	dc.SetFontFace(face)
+	dc.SetRGB(1, 1, 1)
+	dc.DrawStringAnchored("@"+req.NickName, float64(res.Pic.Bounds().Dx()), float64(res.Pic.Bounds().Dy()), 1, -0.3)
+	hash, _ := hashstructure.Hash(res.Pic, nil)
+
+	path := "/asset/summon/cache/"
+	//out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
+
+	dc.SavePNG(fmt.Sprintf(".%s%d.png", path, hash))
+	//jpeg.Encode(out, bg, nil)
+
+	url := fmt.Sprintf("http://localhost:12345%s%d.png", path, hash)
+	return url
 }

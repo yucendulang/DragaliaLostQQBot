@@ -23,7 +23,7 @@ func (q *queryBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 
 func (q *queryBot) Process(req *plugin.Request) *plugin.Result {
 	user := userData.GetUser(req.Udid)
-	var Outer = []string{user.GetMyHitRate(), user.GetAccountInfo(), user.GetCollection(), user.GetBuildInfo()}
+	var Outer = []string{user.GetMyHitRate(req.NickName), user.GetAccountInfo(), user.GetCollection(), user.GetBuildInfo()}
 
 	return &plugin.Result{Content: strings.Join(Outer, "\n")}
 }

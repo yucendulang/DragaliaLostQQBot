@@ -4,16 +4,14 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/mitchellh/hashstructure"
 	"image"
+	"image/color"
 	"image/draw"
-	"image/jpeg"
 	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/plugin"
 	"iotqq-plugins-demo/Go/summon"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
-	"os"
 	"sort"
 	"strings"
 )
@@ -54,8 +52,8 @@ func (c *collectorBot) Process(req *plugin.Request) *plugin.Result {
 	help += buf.String()
 	if help == "" {
 		cardIndex := userData.GetUser(req.Udid).CardIndex
-		url := newCollectionImage(star, cardType, isOwn, cardIndex)
-		return &plugin.Result{PicUrl: url}
+		img := newCollectionImage(star, cardType, isOwn, cardIndex)
+		return &plugin.Result{Pic: img}
 	} else {
 		return &plugin.Result{Content: help}
 	}
@@ -66,7 +64,7 @@ type printCard struct {
 	isOwn bool
 }
 
-func newCollectionImage(star, cardType, isOwn int, cardIndex []int) (url string) {
+func newCollectionImage(star, cardType, isOwn int, cardIndex []int) *image.RGBA {
 	var pc printCards
 	for _, card := range cards.Cards {
 		if card.Star != star {
@@ -83,7 +81,8 @@ func newCollectionImage(star, cardType, isOwn int, cardIndex []int) (url string)
 	}
 
 	rowNum := 6
-	bg := image.NewRGBA(image.Rect(0, 0, 80*rowNum, 80*(len(pc)+5)/rowNum))
+	bg := image.NewRGBA(image.Rect(0, 0, 80*rowNum, 20+80*((len(pc)+5)/rowNum)-1))
+	util.Clear(bg, color.RGBA{R: 0, G: 0, B: 0, A: 255})
 	mask := summon.GetBlackMask(80, 80)
 
 	sort.Sort(pc)
@@ -100,14 +99,13 @@ func newCollectionImage(star, cardType, isOwn int, cardIndex []int) (url string)
 		}
 	}
 
-	hash, _ := hashstructure.Hash(pc, nil)
+	//context:=gg.NewContextForRGBA(bg)
+	//context := gg.NewContext(400, 400)
+	//context.DrawString("test",100,100)
+	//context.SetRGB(0, 0, 0)
+	//context.Fill()
 
-	path := "/asset/summon/cache/"
-	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
-
-	jpeg.Encode(out, bg, nil)
-
-	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
+	return bg
 }
 
 type printCards []printCard
