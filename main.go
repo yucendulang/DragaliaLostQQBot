@@ -99,7 +99,7 @@ func main() {
 				user := userData.GetUser(mess.FromUserID)
 				user.SummonCardNum--
 				if res.Card[0].IconUrl != "" {
-					url := res.ImageFormat()
+					url := res.ImageFormat(user.SummonCardNum, user.Water)
 					model.SendPic(mess.FromGroupID, 2, "\n"+res.Card[0].Title, url)
 					userData.UserDataSave()
 				} else {
@@ -255,7 +255,7 @@ func SummonALot(mess model.Data, num int, summon func(*userData.User) summon.Sum
 		res := summon(user)
 		user.SummonCardNum -= num
 		if num == 10 {
-			url := res.ImageFormat()
+			url := res.ImageFormat(user.SummonCardNum, user.Water)
 			model.SendPic(mess.FromGroupID, 2, "", url)
 			userData.UserDataSave()
 		} else {
@@ -282,7 +282,7 @@ func SummonALot(mess model.Data, num int, summon func(*userData.User) summon.Sum
 						OutStr += fmt.Sprintf("没有更多的new了,未展示的虹共计%d个", ssrNum)
 					}
 				}
-				url := res.ImageFormat()
+				url := res.ImageFormat(user.SummonCardNum, user.Water)
 				model.SendPic(mess.FromGroupID, 2, OutStr, url)
 				if res.Card[10].Star == 5 && res.Card[10].New {
 					res.Card = res.Card[10:]

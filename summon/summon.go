@@ -3,6 +3,8 @@ package summon
 import (
 	"bytes"
 	"fmt"
+	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
 	"github.com/mitchellh/hashstructure"
 	"github.com/nfnt/resize"
 	"image"
@@ -11,6 +13,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"iotqq-plugins-demo/Go/cards"
+	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
 	"math/rand"
@@ -64,6 +67,11 @@ type SummonCard struct {
 	New bool
 }
 
+var waterIconImage = GetImage("water")
+var waterSmall = resize.Resize(20, 20, waterIconImage, resize.Lanczos3)
+var voucherIconImage = GetImage("voucher")
+var voucherSmall = resize.Resize(20, 20, voucherIconImage, resize.Lanczos3)
+
 func OneSummon(user *userData.User) (res *SummonRecord) {
 	res = SingleSummon(user, 0)
 	res.RaiseUnHitNumber(user)
@@ -110,7 +118,7 @@ func SingleSummon(user *userData.User, index int) (res *SummonRecord) {
 	//	res.Card = append(res.Card, *splitSummon(cardPoolsKey))
 	//}
 
-	return res
+	//return res
 }
 
 func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *cards.CardCollectionV2) *SummonRecord {
@@ -136,21 +144,21 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	return res
 }
 
-func splitSummon(keys []int) *SummonCard {
-	sum := 0
-	for _, key := range keys {
-		sum += cards.CardCollection[key].Prob
-	}
-	ranSSR := rand.Intn(sum)
-	gailv := 0
-	for _, key := range keys {
-		gailv += cards.CardCollection[key].Prob
-		if ranSSR < gailv {
-			return &SummonCard{cards.SummonOne(key), false}
-		}
-	}
-	panic("概率溢出")
-}
+//func splitSummon(keys []int) *SummonCard {
+//	sum := 0
+//	for _, key := range keys {
+//		sum += cards.CardCollection[key].Prob
+//	}
+//	ranSSR := rand.Intn(sum)
+//	gailv := 0
+//	for _, key := range keys {
+//		gailv += cards.CardCollection[key].Prob
+//		if ranSSR < gailv {
+//			return &SummonCard{cards.SummonOne(key), false}
+//		}
+//	}
+//	panic("概率溢出")
+//}
 
 func splitSummonV2(cardSets []*cards.CardSet) *SummonCard {
 	sum := 0
@@ -219,7 +227,7 @@ func (s *SummonRecord) Format() string {
 	res += "bang bang bang bang love&die"
 	return res
 }
-func (s *SummonRecord) ImageFormat() (url string) {
+func (s *SummonRecord) ImageFormat(volunterNum, water int) (url string) {
 	bgPng := GetImage("background")
 	//merge banner to bg
 	//fmt.Println(s.TopBannerUrl)
@@ -251,14 +259,39 @@ func (s *SummonRecord) ImageFormat() (url string) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	board := 70
+	waterStatusPoint := image.Point{X: bgPng.Bounds().Dx() - 80 - board, Y: 500}
+	drawStatus(water, waterStatusPoint, waterSmall, bgPng)
+
+	volunterStatusPoint := image.Point{X: board, Y: 500}
+	drawStatus(volunterNum, volunterStatusPoint, voucherSmall, bgPng)
+
 	hash, _ := hashstructure.Hash(s, nil)
 
 	path := "/asset/summon/cache/"
 	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
 
-	jpeg.Encode(out, bgPng, nil)
+	_ = jpeg.Encode(out, bgPng, nil)
 
 	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
+}
+
+func drawStatus(num int, point image.Point, icon, bgPng image.Image) {
+	blackBar := GetBlackMask(100, 20)
+	face := truetype.NewFace(common.Font, &truetype.Options{Size: 13})
+	dc := gg.NewContextForImage(blackBar)
+	dc.SetFontFace(face)
+	dc.SetRGB(1, 1, 1)
+	dc.DrawStringAnchored(strconv.Itoa(num), float64(dc.Width()), float64(dc.Height()/2), 1.05, 0.5)
+	dc.DrawImage(icon, 0, 0)
+	blackBar = dc.Image().(*image.RGBA)
+
+	rectBB := image.Rectangle{
+		Min: point,
+		Max: point.Add(blackBar.Bounds().Max),
+	}
+	draw.Draw(bgPng.(*image.NRGBA), rectBB, blackBar, image.Point{}, draw.Over)
 }
 
 func mergeTopBannerToBG(banner image.Image, bgPng image.Image) {
@@ -334,10 +367,9 @@ func productCardPng(card SummonCard) image.Image {
 		}
 		draw.Draw(cardPng.(*image.NRGBA), rectWater, waterImg, dp, draw.Over)
 
-		water := GetImage("water")
 		dpNewMin := image.Point{X: 0, Y: 46}
-		dpNewMax := dpNewMin.Add(water.Bounds().Max)
-		draw.Draw(cardPng.(*image.NRGBA), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, water, image.Point{X: 3}, draw.Over)
+		dpNewMax := dpNewMin.Add(waterIconImage.Bounds().Max)
+		draw.Draw(cardPng.(*image.NRGBA), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, waterIconImage, image.Point{X: 3}, draw.Over)
 	}
 	return cardPng
 }
@@ -361,7 +393,7 @@ func GetCardImage(url string) image.Image {
 		pathPattern := "./asset/cache/%s.png"
 		path := fmt.Sprintf(pathPattern, hashUrl)
 		out, _ := os.Create(path)
-		png.Encode(out, img)
+		_ = png.Encode(out, img)
 		return img
 	}
 }

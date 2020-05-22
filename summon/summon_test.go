@@ -106,7 +106,7 @@ func TestSummonRecord_ImageFormat(t *testing.T) {
 					New:  false,
 				})
 			}
-			fmt.Println(res.ImageFormat())
+			fmt.Println(res.ImageFormat(0, 0))
 		})
 	}
 }
