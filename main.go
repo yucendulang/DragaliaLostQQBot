@@ -14,6 +14,7 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/stickerBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/announceBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/collectorBot"
+	_ "iotqq-plugins-demo/Go/plugin/summonGame/gachaBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/probabilityCalBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/queryBot"
 	_ "iotqq-plugins-demo/Go/plugin/wordTriggerBot"
@@ -147,27 +148,6 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	*/
 	nickName := util.FixName(mess.FromNickName)
 	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
-
-	if util.KeyWordTrigger(mess.Content, "抽卡") || util.KeyWordTrigger(mess.Content, "单抽") {
-		user := userData.GetUser(mess.FromUserID)
-		if user.SummonCardNum >= 1 {
-			res := summon.OneSummon(user)
-			user := userData.GetUser(mess.FromUserID)
-			user.SummonCardNum--
-			if res.Card[0].IconUrl != "" {
-				url := res.ImageFormat(user.SummonCardNum, user.Water)
-				model.SendPic(mess.FromGroupID, 2, "\n"+res.Card[0].Title, url)
-				userData.UserDataSave()
-			} else {
-				OutStr := nickName + res.Format() + "\n\n" + user.GetAccountInfo()
-				model.Send(mess.FromGroupID, 2, OutStr)
-				userData.UserDataSave()
-				return
-			}
-		} else {
-			model.Send(mess.FromGroupID, 2, "召唤券不够了"+random.RandomGetSuffix())
-		}
-	}
 
 	if util.KeyWordTrigger(mess.Content, "十连") {
 		if SummonALot(mess, 10, summon.TenSummon) {

@@ -228,6 +228,19 @@ func (s *SummonRecord) Format() string {
 	return res
 }
 func (s *SummonRecord) ImageFormat(volunterNum, water int) (url string) {
+	bgPng := s.ImageFormatV2(volunterNum, water)
+
+	hash, _ := hashstructure.Hash(s, nil)
+
+	path := "/asset/summon/cache/"
+	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
+
+	_ = jpeg.Encode(out, bgPng, nil)
+
+	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
+}
+
+func (s *SummonRecord) ImageFormatV2(volunterNum int, water int) image.Image {
 	bgPng := GetImage("background")
 	//merge banner to bg
 	//fmt.Println(s.TopBannerUrl)
@@ -266,15 +279,7 @@ func (s *SummonRecord) ImageFormat(volunterNum, water int) (url string) {
 
 	volunterStatusPoint := image.Point{X: board, Y: 500}
 	drawStatus(volunterNum, volunterStatusPoint, voucherSmall, bgPng)
-
-	hash, _ := hashstructure.Hash(s, nil)
-
-	path := "/asset/summon/cache/"
-	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
-
-	_ = jpeg.Encode(out, bgPng, nil)
-
-	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
+	return bgPng
 }
 
 func drawStatus(num int, point image.Point, icon, bgPng image.Image) {
