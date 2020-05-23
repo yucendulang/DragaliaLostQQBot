@@ -34,6 +34,8 @@ import (
 )
 
 var url1, qq string
+var site = "127.0.0.1"
+var port = 8888
 
 func main() {
 	model.StartPicServer(true)
@@ -57,10 +59,6 @@ func main() {
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
 	buildCommand := regexp.MustCompile("\"@修玛吉亚-Du 建造(.*?)\"")
 
-	var site string
-	var port int
-	port = 8888
-	site = "127.0.0.1"
 	qq = "2834323101"
 	url1 = site + ":" + strconv.Itoa(port)
 	model.Set(url1, qq, &mq)
@@ -69,158 +67,33 @@ func main() {
 	qqInt, _ := strconv.Atoi(qq)
 	plugin.FactoryInstance.SetOptions(int64(qqInt))
 
+	go func() {
+		for {
+			connect(buildCommand, recruitexp, recruitCanjiaExp)
+			time.Sleep(time.Second * 5)
+		}
+	}()
+
+	model.Periodlycall(60*time.Second, userData.UserDataSave)
+	//log.Println(" [x] Complete")
+}
+
+func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanjiaExp *regexp.Regexp) {
+	var fail = make(chan bool)
 	c, err := gosocketio.Dial(
 		gosocketio.GetUrl(site, port, false),
 		transport.GetDefaultWebsocketTransport())
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
-
 	err = c.On("OnGroupMsgs", func(h *gosocketio.Channel, args model.Message) {
-		rand.Seed(time.Now().Unix())
-		var mess model.Data = args.CurrentPacket.Data
-
-		common.HistoryRecord.Push(mess.Content, mess.FromUserID)
-
-		if q, _ := strconv.Atoi(qq); mess.FromUserID == int64(q) {
-			return
-		}
-		/*
-			mess.Content 消息内容 string
-			mess.FromGroupID 来源QQ群 int
-			mess.FromUserID 来源QQ int64
-			mess.iotqqType 消息类型 string
-		*/
-		nickName := util.FixName(mess.FromNickName)
-		log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
-
-		if util.KeyWordTrigger(mess.Content, "抽卡") || util.KeyWordTrigger(mess.Content, "单抽") {
-			user := userData.GetUser(mess.FromUserID)
-			if user.SummonCardNum >= 1 {
-				res := summon.OneSummon(user)
-				user := userData.GetUser(mess.FromUserID)
-				user.SummonCardNum--
-				if res.Card[0].IconUrl != "" {
-					url := res.ImageFormat(user.SummonCardNum, user.Water)
-					model.SendPic(mess.FromGroupID, 2, "\n"+res.Card[0].Title, url)
-					userData.UserDataSave()
-				} else {
-					OutStr := nickName + res.Format() + "\n\n" + user.GetAccountInfo()
-					model.Send(mess.FromGroupID, 2, OutStr)
-					userData.UserDataSave()
-					return
-				}
-			} else {
-				model.Send(mess.FromGroupID, 2, "召唤券不够了"+random.RandomGetSuffix())
-			}
-		}
-
-		if util.KeyWordTrigger(mess.Content, "十连") {
-			if SummonALot(mess, 10, summon.TenSummon) {
-				return
-			}
-		}
-
-		if util.KeyWordTrigger(mess.Content, "百连") {
-			if SummonALot(mess, 100, summon.GetMultiSummon(100)) {
-				return
-			}
-		}
-
-		if util.KeyWordTrigger(mess.Content, "千连") {
-			if SummonALot(mess, 1000, summon.GetMultiSummon(1000)) {
-				return
-			}
-		}
-
-		if util.KeyWordTrigger(mess.Content, "万连") {
-			if SummonALot(mess, 10000, summon.GetMultiSummon(10000)) {
-				return
-			}
-		}
-
-		if util.KeyWordTrigger(mess.Content, "abcd all") {
-			userData.UserRange(func(key, value interface{}) bool {
-				value.(*userData.User).SummonCardNum += 200
-				return true
-			})
-		}
-
-		buildComm := buildCommand.FindStringSubmatch(mess.Content)
-		if len(buildComm) > 0 {
-			out, index := building.ConstructNewBuilding(buildComm[1])
-			if index >= 0 {
-				user := userData.GetUser(mess.FromUserID)
-				var level int
-				var levelIndex int
-				for i, buildIndex := range user.BuildIndex {
-					if buildIndex.Index == index {
-						level = buildIndex.Level
-						levelIndex = i
-						break
-					}
-				}
-				cost := building.BuildList[index].Cost * level
-				if user.Water < cost {
-					model.Send(mess.FromGroupID, 2, fmt.Sprintf(nickName+"建造费用%d💧不够"+random.RandomGetSuffix(), cost))
-					return
-				} else {
-					if level == 0 {
-						user.BuildIndex = append(user.BuildIndex, common.BuildRecord{Index: index, Level: 1})
-					} else {
-						user.BuildIndex[levelIndex].Level++
-					}
-
-					user.Water -= cost
-				}
-				model.Send(mess.FromGroupID, 2, nickName+out+"花费"+strconv.Itoa(cost)+"💧")
-			} else {
-				model.Send(mess.FromGroupID, 2, nickName+out)
-			}
-			return
-		}
-
-		rec := recruitexp.FindStringSubmatch(mess.Content)
-		if len(rec) > 0 {
-			fmt.Println("start recruit")
-			num, _ := strconv.Atoi(rec[2])
-			recruit := CreateRecruit(num, rec[1])
-			recruit.qqgroupid = mess.FromGroupID
-			recruit.ParticipateRecruit(Member{
-				QQ:       mess.FromUserID,
-				Nickname: nickName,
-			})
-			recruit.TryRecruit()
-			for _, s := range rec {
-				fmt.Println(s)
-			}
-		}
-
-		if recruitCanjiaExp.MatchString(mess.Content) {
-			fmt.Println("有人参加任务")
-			i, _ := strconv.Atoi(mess.Content)
-			r := GetRecruit(i)
-			r.ParticipateRecruit(Member{
-				QQ:       mess.FromUserID,
-				Nickname: nickName,
-			})
-		}
-
-		if mess.Content == "c" {
-			CancelAllRecruit(mess.FromUserID)
-		}
-
-		if mess.Content == "testrapid" {
-			model.Send(mess.FromGroupID, 2, "echo back")
-			model.Send(mess.FromGroupID, 2, "echo back")
-			model.Send(mess.FromGroupID, 2, "echo back")
-		}
-
-		plugin.FactoryInstance.Run(mess)
+		processGroupMsg(args, buildCommand, recruitexp, recruitCanjiaExp)
 
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	err = c.On("OnFriendiotqqs", func(h *gosocketio.Channel, args model.Message) {
 		var mess model.Data = args.CurrentPacket.Data
@@ -232,29 +105,172 @@ func main() {
 
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	err = c.On(gosocketio.OnDisconnection, func(h *gosocketio.Channel) {
 		log.Println("Disconnected")
-		go model.SendJoin(c, qq)
+		fail <- true
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	err = c.On(gosocketio.OnConnection, func(h *gosocketio.Channel) {
 		log.Println("连接成功")
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	time.Sleep(1 * time.Second)
-	go model.SendJoin(c, qq)
-	go model.Periodlycall(60*time.Second, userData.UserDataSave)
-home:
-	time.Sleep(600 * time.Second)
 	model.SendJoin(c, qq)
-	goto home
-	//log.Println(" [x] Complete")
+
+	_ = <-fail
+	fmt.Println("some thing happen failed exit connect")
+}
+
+func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanjiaExp *regexp.Regexp) {
+	rand.Seed(time.Now().Unix())
+	var mess model.Data = args.CurrentPacket.Data
+
+	common.HistoryRecord.Push(mess.Content, mess.FromUserID)
+
+	if q, _ := strconv.Atoi(qq); mess.FromUserID == int64(q) {
+		return
+	}
+	/*
+		mess.Content 消息内容 string
+		mess.FromGroupID 来源QQ群 int
+		mess.FromUserID 来源QQ int64
+		mess.iotqqType 消息类型 string
+	*/
+	nickName := util.FixName(mess.FromNickName)
+	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
+
+	if util.KeyWordTrigger(mess.Content, "抽卡") || util.KeyWordTrigger(mess.Content, "单抽") {
+		user := userData.GetUser(mess.FromUserID)
+		if user.SummonCardNum >= 1 {
+			res := summon.OneSummon(user)
+			user := userData.GetUser(mess.FromUserID)
+			user.SummonCardNum--
+			if res.Card[0].IconUrl != "" {
+				url := res.ImageFormat(user.SummonCardNum, user.Water)
+				model.SendPic(mess.FromGroupID, 2, "\n"+res.Card[0].Title, url)
+				userData.UserDataSave()
+			} else {
+				OutStr := nickName + res.Format() + "\n\n" + user.GetAccountInfo()
+				model.Send(mess.FromGroupID, 2, OutStr)
+				userData.UserDataSave()
+				return
+			}
+		} else {
+			model.Send(mess.FromGroupID, 2, "召唤券不够了"+random.RandomGetSuffix())
+		}
+	}
+
+	if util.KeyWordTrigger(mess.Content, "十连") {
+		if SummonALot(mess, 10, summon.TenSummon) {
+			return
+		}
+	}
+
+	if util.KeyWordTrigger(mess.Content, "百连") {
+		if SummonALot(mess, 100, summon.GetMultiSummon(100)) {
+			return
+		}
+	}
+
+	if util.KeyWordTrigger(mess.Content, "千连") {
+		if SummonALot(mess, 1000, summon.GetMultiSummon(1000)) {
+			return
+		}
+	}
+
+	if util.KeyWordTrigger(mess.Content, "万连") {
+		if SummonALot(mess, 10000, summon.GetMultiSummon(10000)) {
+			return
+		}
+	}
+
+	if util.KeyWordTrigger(mess.Content, "abcd all") {
+		userData.UserRange(func(key, value interface{}) bool {
+			value.(*userData.User).SummonCardNum += 200
+			return true
+		})
+	}
+
+	buildComm := buildCommand.FindStringSubmatch(mess.Content)
+	if len(buildComm) > 0 {
+		out, index := building.ConstructNewBuilding(buildComm[1])
+		if index >= 0 {
+			user := userData.GetUser(mess.FromUserID)
+			var level int
+			var levelIndex int
+			for i, buildIndex := range user.BuildIndex {
+				if buildIndex.Index == index {
+					level = buildIndex.Level
+					levelIndex = i
+					break
+				}
+			}
+			cost := building.BuildList[index].Cost * level
+			if user.Water < cost {
+				model.Send(mess.FromGroupID, 2, fmt.Sprintf(nickName+"建造费用%d💧不够"+random.RandomGetSuffix(), cost))
+				return
+			} else {
+				if level == 0 {
+					user.BuildIndex = append(user.BuildIndex, common.BuildRecord{Index: index, Level: 1})
+				} else {
+					user.BuildIndex[levelIndex].Level++
+				}
+
+				user.Water -= cost
+			}
+			model.Send(mess.FromGroupID, 2, nickName+out+"花费"+strconv.Itoa(cost)+"💧")
+		} else {
+			model.Send(mess.FromGroupID, 2, nickName+out)
+		}
+		return
+	}
+
+	rec := recruitexp.FindStringSubmatch(mess.Content)
+	if len(rec) > 0 {
+		fmt.Println("start recruit")
+		num, _ := strconv.Atoi(rec[2])
+		recruit := CreateRecruit(num, rec[1])
+		recruit.qqgroupid = mess.FromGroupID
+		recruit.ParticipateRecruit(Member{
+			QQ:       mess.FromUserID,
+			Nickname: nickName,
+		})
+		recruit.TryRecruit()
+		for _, s := range rec {
+			fmt.Println(s)
+		}
+	}
+
+	if recruitCanjiaExp.MatchString(mess.Content) {
+		fmt.Println("有人参加任务")
+		i, _ := strconv.Atoi(mess.Content)
+		r := GetRecruit(i)
+		r.ParticipateRecruit(Member{
+			QQ:       mess.FromUserID,
+			Nickname: nickName,
+		})
+	}
+
+	if mess.Content == "c" {
+		CancelAllRecruit(mess.FromUserID)
+	}
+
+	if mess.Content == "testrapid" {
+		model.Send(mess.FromGroupID, 2, "echo back")
+		model.Send(mess.FromGroupID, 2, "echo back")
+		model.Send(mess.FromGroupID, 2, "echo back")
+	}
+
+	plugin.FactoryInstance.Run(mess)
 }
 
 func SummonALot(mess model.Data, num int, summon func(*userData.User) summon.SummonRecord) bool {
