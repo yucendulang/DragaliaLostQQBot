@@ -11,6 +11,7 @@ import (
 )
 
 var url1, qq string
+var messageQueue *MessageQueue
 
 type QQinfo struct {
 	Code    int    `json:"code"`
@@ -111,9 +112,10 @@ type Channel struct {
 	Channel string `json:"channel"`
 }
 
-func Set(url string, qq1 string) {
+func Set(url string, qq1 string, mq *MessageQueue) {
 	qq = qq1
 	url1 = url
+	messageQueue = mq
 }
 func GetCook() Cook {
 	resp, err := http.Get("http://" + url1 + "/v1/LuaApiCaller?funcname=GetUserCook&timeout=10&qq=" + qq)
@@ -132,51 +134,55 @@ func GetCook() Cook {
 	return thecook
 }
 func SendPic(ToUser int, SendToType int, Content string, PicUrl string) {
-	//发送图文信息
-	tmp := make(map[string]interface{})
-	tmp["toUser"] = ToUser
-	tmp["sendToType"] = SendToType
-	tmp["sendMsgType"] = "PicMsg"
-	tmp["picBase64Buf"] = ""
-	tmp["fileMd5"] = ""
-	tmp["picUrl"] = PicUrl
-	tmp["content"] = Content
-	tmp["groupid"] = 0
-	tmp["atUser"] = 0
-	tmp["pwd"] = "mcoo"
-	tmp1, _ := json.Marshal(tmp)
-	resp, err := (http.Post("http://"+url1+"/v1/LuaApiCaller?funcname=SendMsg&timeout=10&qq="+qq, "application/json", bytes.NewBuffer(tmp1)))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	messageQueue.addOne(func() {
+		//发送图文信息
+		tmp := make(map[string]interface{})
+		tmp["toUser"] = ToUser
+		tmp["sendToType"] = SendToType
+		tmp["sendMsgType"] = "PicMsg"
+		tmp["picBase64Buf"] = ""
+		tmp["fileMd5"] = ""
+		tmp["picUrl"] = PicUrl
+		tmp["content"] = Content
+		tmp["groupid"] = 0
+		tmp["atUser"] = 0
+		tmp["pwd"] = "mcoo"
+		tmp1, _ := json.Marshal(tmp)
+		resp, err := (http.Post("http://"+url1+"/v1/LuaApiCaller?funcname=SendMsg&timeout=10&qq="+qq, "application/json", bytes.NewBuffer(tmp1)))
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println(string(body))
+	})
 }
 func Send(ToUser int, SendToType int, Content string) {
 	Send2(ToUser, SendToType, Content, 0)
 }
 
 func Send2(ToUser int, SendToType int, Content string, atUser int) {
-	//发送文本信息
-	tmp := make(map[string]interface{})
-	tmp["toUser"] = ToUser
-	tmp["sendToType"] = SendToType
-	tmp["sendMsgType"] = "TextMsg"
-	tmp["content"] = Content
-	tmp["groupid"] = 0
-	tmp["atUser"] = atUser
-	tmp["pwd"] = "mcoo"
-	tmp1, _ := json.Marshal(tmp)
-	resp, err := (http.Post("http://"+url1+"/v1/LuaApiCaller?funcname=SendMsg&timeout=10&qq="+qq, "application/json", bytes.NewBuffer(tmp1)))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	messageQueue.addOne(func() {
+		//发送文本信息
+		tmp := make(map[string]interface{})
+		tmp["toUser"] = ToUser
+		tmp["sendToType"] = SendToType
+		tmp["sendMsgType"] = "TextMsg"
+		tmp["content"] = Content
+		tmp["groupid"] = 0
+		tmp["atUser"] = atUser
+		tmp["pwd"] = "mcoo"
+		tmp1, _ := json.Marshal(tmp)
+		resp, err := (http.Post("http://"+url1+"/v1/LuaApiCaller?funcname=SendMsg&timeout=10&qq="+qq, "application/json", bytes.NewBuffer(tmp1)))
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println(string(body))
+	})
 }
 func SendA(ToUser int, SendToType int, Content string, SendMsgType string) {
 	//发送其他信息

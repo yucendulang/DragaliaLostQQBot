@@ -51,6 +51,8 @@ func main() {
 	userData.UserDataLoad()
 	util.SignalNotify()
 	util.RestoreRamVar()
+	mq := model.MessageQueue{}
+	mq.Start()
 	recruitexp := regexp.MustCompile("招募(.*)缺([0-9])")
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
 	buildCommand := regexp.MustCompile("\"@修玛吉亚-Du 建造(.*?)\"")
@@ -61,7 +63,7 @@ func main() {
 	site = "127.0.0.1"
 	qq = "2834323101"
 	url1 = site + ":" + strconv.Itoa(port)
-	model.Set(url1, qq)
+	model.Set(url1, qq, &mq)
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	qqInt, _ := strconv.Atoi(qq)
@@ -206,6 +208,12 @@ func main() {
 
 		if mess.Content == "c" {
 			CancelAllRecruit(mess.FromUserID)
+		}
+
+		if mess.Content == "testrapid" {
+			model.Send(mess.FromGroupID, 2, "echo back")
+			model.Send(mess.FromGroupID, 2, "echo back")
+			model.Send(mess.FromGroupID, 2, "echo back")
 		}
 
 		plugin.FactoryInstance.Run(mess)
