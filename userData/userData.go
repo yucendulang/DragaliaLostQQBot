@@ -12,18 +12,20 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 var UserMap sync.Map
 var MaxCollectionNum = 0
 
 type User struct {
-	Udid          int64
-	SummonCardNum int
-	Water         int
-	UnHitNumber   int
-	CardIndex     []int
-	BuildIndex    []common.BuildRecord
+	Udid                int64
+	SummonCardNum       int
+	Water               int
+	UnHitNumber         int
+	CardIndex           []int
+	BuildIndex          []common.BuildRecord
+	LastVolunterGetTime time.Time
 }
 
 var userinfoPath = "d:\\userinfo"
@@ -110,11 +112,12 @@ func (u *User) GetAccountInfo() string {
 
 func (u *User) GetCollection() string {
 	res := ""
-	c := cards.GetCardsAnalysis(u.CardIndex)
-	res += fmt.Sprintf("图鉴一览:五星角色%d/%d,四星角色%d/%d,三星角色%d/%d\n",
-		c[0], common.FiveStarCharacterNum, c[1], common.FourStarCharacterNum, c[2], common.ThreeStarCharacterNum)
-	res += fmt.Sprintf("五星龙%d/%d,四星龙%d/%d,三星龙%d/%d",
-		c[3], common.FiveStarDragonNum, c[4], common.FourStarDragonNum, c[5], common.ThreeStarDragonNum)
+	//c := cards.GetCardsAnalysis(u.CardIndex)
+	//res += fmt.Sprintf("图鉴一览:五星角色%d/%d,四星角色%d/%d,三星角色%d/%d\n",
+	//	c[0], common.FiveStarCharacterNum, c[1], common.FourStarCharacterNum, c[2], common.ThreeStarCharacterNum)
+	//res += fmt.Sprintf("五星龙%d/%d,四星龙%d/%d,三星龙%d/%d",
+	//	c[3], common.FiveStarDragonNum, c[4], common.FourStarDragonNum, c[5], common.ThreeStarDragonNum)
+	res += fmt.Sprintf("图鉴完成度:%d/%d", len(u.CardIndex), len(cards.Cards))
 	return res
 }
 
@@ -127,7 +130,12 @@ func (u *User) GetBuildInfo() string {
 	for _, b := range u.BuildIndex {
 		item = append(item, fmt.Sprintf("%slv%d", building.BuildList[b.Index].Title, b.Level))
 	}
-	res += fmt.Sprintf("拥有的建筑:%s", strings.Join(item, ","))
+	res += fmt.Sprintf("拥有的建筑:%s;", strings.Join(item, ","))
+	eff := building.GetBuildEffect(u.BuildIndex)
+	if eff.VolunterMineProduct != 0 {
+		ft := u.LastVolunterGetTime.Add(common.VolunterMineProductPeriod).Sub(time.Now())
+		res += fmt.Sprintf("金币矿山将在%d小时%d分钟之后产出%d🎟", int(ft.Minutes())/60, int(ft.Minutes())%60, eff.VolunterMineProduct)
+	}
 	return res
 }
 

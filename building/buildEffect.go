@@ -1,8 +1,9 @@
 package building
 
 type buildingEffect struct {
-	RepeatProbability int
-	RepeatBonus       int
+	RepeatProbability   int
+	RepeatBonus         int
+	VolunterMineProduct int
 }
 
 func (b *buildingEffect) GetExtraRepeatBonus() float32 {

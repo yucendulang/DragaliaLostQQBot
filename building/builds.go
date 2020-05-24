@@ -21,6 +21,9 @@ func init() {
 	new(200000, 1, "水祭坛", func(b *buildingEffect, level int) {
 		b.RepeatProbability += 10 * level
 	})
+	new(200000, 2, "金币矿山", func(b *buildingEffect, level int) {
+		b.VolunterMineProduct = 50 * (100 + (level-1)*10) / 100
+	})
 	//new(100000, 3, "水祭坛2", func(b *buildingEffect, level int) {
 	//	b.RepeatProbability += 10 * level
 	//})
@@ -54,8 +57,9 @@ func FindBuildingByName(name string) (int, bool) {
 
 func GetBuildEffect(record []common.BuildRecord) *buildingEffect {
 	eff := &buildingEffect{
-		RepeatProbability: 0,
-		RepeatBonus:       100,
+		RepeatProbability:   0,
+		RepeatBonus:         100,
+		VolunterMineProduct: 0,
 	}
 	for _, r := range record {
 		BuildList[r.Index].f(eff, r.Level)

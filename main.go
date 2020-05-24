@@ -19,6 +19,7 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/queryBot"
 	_ "iotqq-plugins-demo/Go/plugin/wordTriggerBot"
 	"iotqq-plugins-demo/Go/random"
+	"iotqq-plugins-demo/Go/summon"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
 	"log"
@@ -52,6 +53,8 @@ func main() {
 	userData.UserDataLoad()
 	util.SignalNotify()
 	util.RestoreRamVar()
+	summon.InitImageSource()
+	model.StartTick()
 	mq := model.MessageQueue{}
 	mq.Start()
 	recruitexp := regexp.MustCompile("招募(.*)缺([0-9])")
@@ -150,6 +153,13 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	if util.KeyWordTrigger(mess.Content, "abcd all") {
 		userData.UserRange(func(key, value interface{}) bool {
 			value.(*userData.User).SummonCardNum += 200
+			return true
+		})
+	}
+
+	if util.KeyWordTrigger(mess.Content, "abcd coinmine") {
+		userData.UserRange(func(key, value interface{}) bool {
+			value.(*userData.User).BuildIndex = append(value.(*userData.User).BuildIndex, common.BuildRecord{Index: 2, Level: 1})
 			return true
 		})
 	}

@@ -67,10 +67,16 @@ type SummonCard struct {
 	New bool
 }
 
-var waterIconImage = GetImage("water")
-var waterSmall = resize.Resize(20, 20, waterIconImage, resize.Lanczos3)
-var voucherIconImage = GetImage("voucher")
-var voucherSmall = resize.Resize(20, 20, voucherIconImage, resize.Lanczos3)
+var (
+	waterIconImage, waterSmall, voucherIconImage, voucherSmall image.Image
+)
+
+func InitImageSource() {
+	waterIconImage = GetImage("water")
+	waterSmall = resize.Resize(20, 20, waterIconImage, resize.Lanczos3)
+	voucherIconImage = GetImage("voucher")
+	voucherSmall = resize.Resize(20, 20, voucherIconImage, resize.Lanczos3)
+}
 
 func OneSummon(user *userData.User) (res *SummonRecord) {
 	res = SingleSummon(user, 0)

@@ -35,13 +35,14 @@ func (h helpBot) Process(req *plugin.Request) []*plugin.Result {
 	//fmt.Println(cmd,cmd2,cmd3)
 	//flagSet.Usage()
 	res := "我没有理解你想做什么,现在我能提供以下服务\n"
-	res += "不需要at我就能直接触发的有:单抽 十连 百连 可以触发抽卡逻辑\n"
+	res += "不需要at我就能直接触发的有:单抽 十连 百连 千连 万连可以触发抽卡逻辑\n"
 	res += "输入表情包的名字可以获取对应表情一张\n"
 	res += "招募xx缺x可以触发招募逻辑\n"
 	res += "呼唤人气群友的名字可以获得灵魂拷问一次\n"
 	res += "任何时候都可以得到修玛吉亚的复读,获得召唤卷若干\n"
-	res += "需要at我触发的有:@我 建造xxx 暂时只支持水祭坛/觉醒之岚树\n"
+	res += "需要at我触发的有:@我 建造xxx 暂时只支持水祭坛/觉醒之岚树/金币矿山\n"
 	res += "@我 公告 获取最新信息\n"
+	res += "@我 图鉴 查看图鉴\n"
 	return []*plugin.Result{{
 		Content: res,
 	}}

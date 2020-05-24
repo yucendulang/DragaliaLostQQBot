@@ -8,6 +8,7 @@ import (
 	"iotqq-plugins-demo/Go/summon"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
+	"time"
 )
 
 func init() {
@@ -45,6 +46,7 @@ func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 	eff := building.GetBuildEffect(user.BuildIndex)
 	num := int(float32(RandomSummonCard()*10) * eff.GetExtraRepeatBonus())
 	user.SummonCardNum += num
+	user.LastVolunterGetTime = time.Now()
 	res.Content = fmt.Sprintf("%s%s\n(送%s殿下%d张🎟", util.FixSentense(req.Content), random.RandomGetSuffix(), req.NickName, num)
 	return []*plugin.Result{res}
 }

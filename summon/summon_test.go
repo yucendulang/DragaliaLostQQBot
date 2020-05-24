@@ -3,24 +3,30 @@ package summon
 import (
 	"fmt"
 	"iotqq-plugins-demo/Go/cards"
+	"iotqq-plugins-demo/Go/userData"
 	"testing"
 )
 
-//
-//func TestTenSummon(t *testing.T) {
-//	tests := []struct {
-//		name    string
-//		wantRes SummonRecord
-//	}{
-//		{"basic", SummonRecord{}},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			gotRes := TenSummon(&userData.User{})
-//			fmt.Printf(gotRes.Format())
-//		})
-//	}
-//}
+func TestTenSummon(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantRes SummonRecord
+	}{
+		{"basic", SummonRecord{}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotRes := GetMultiSummon(1000)(&userData.User{})
+			totalWater := 0
+			for _, card := range gotRes.Card {
+				totalWater += card.Water
+			}
+			fmt.Printf(gotRes.Format())
+			fmt.Println("Get water ", totalWater)
+		})
+	}
+}
+
 //
 //func TestTenSummonRate(t *testing.T) {
 //	tests := []struct {
