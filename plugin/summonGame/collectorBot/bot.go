@@ -29,7 +29,7 @@ func (c *collectorBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return f(req)
 }
 
-func (c *collectorBot) Process(req *plugin.Request) *plugin.Result {
+func (c *collectorBot) Process(req *plugin.Request) []*plugin.Result {
 	args := strings.Split(req.Content, " ")
 	flagSet := flag.NewFlagSet("图鉴", 0)
 	var star int
@@ -53,9 +53,9 @@ func (c *collectorBot) Process(req *plugin.Request) *plugin.Result {
 	if help == "" {
 		cardIndex := userData.GetUser(req.Udid).CardIndex
 		img := newCollectionImage(star, cardType, isOwn, cardIndex)
-		return &plugin.Result{Pic: img}
+		return []*plugin.Result{{Pic: img}}
 	} else {
-		return &plugin.Result{Content: help}
+		return []*plugin.Result{{Content: help}}
 	}
 }
 

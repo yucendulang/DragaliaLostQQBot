@@ -21,7 +21,7 @@ func (c *collectorBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return f(req)
 }
 
-func (c *collectorBot) Process(req *plugin.Request) *plugin.Result {
+func (c *collectorBot) Process(req *plugin.Request) []*plugin.Result {
 	args := strings.Split(req.Content, " ")
 	flagSet := flag.NewFlagSet("概率计算", 0)
 	var goalCard = flagSet.String("g", "", "goal card,split by comma")
@@ -33,13 +33,9 @@ func (c *collectorBot) Process(req *plugin.Request) *plugin.Result {
 	fmt.Println(*goalCard, *drawNum)
 	content, f, err := SimParse(*goalCard, *drawNum)
 	if err != nil {
-		return &plugin.Result{Content: err.Error()}
+		return []*plugin.Result{{Content: err.Error()}}
 	} else {
-		return &plugin.Result{
-			Content:   content,
-			PicUrl:    "",
-			DelayFunc: f,
-		}
+		return []*plugin.Result{{Content: content, DelayFunc: f}}
 	}
 }
 

@@ -19,14 +19,12 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/queryBot"
 	_ "iotqq-plugins-demo/Go/plugin/wordTriggerBot"
 	"iotqq-plugins-demo/Go/random"
-	"iotqq-plugins-demo/Go/summon"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
 	"log"
 	"math/rand"
 	"regexp"
 	"runtime"
-	"sort"
 	"strconv"
 	"time"
 
@@ -149,30 +147,6 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	nickName := util.FixName(mess.FromNickName)
 	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
 
-	if util.KeyWordTrigger(mess.Content, "十连") {
-		if SummonALot(mess, 10, summon.TenSummon) {
-			return
-		}
-	}
-
-	if util.KeyWordTrigger(mess.Content, "百连") {
-		if SummonALot(mess, 100, summon.GetMultiSummon(100)) {
-			return
-		}
-	}
-
-	if util.KeyWordTrigger(mess.Content, "千连") {
-		if SummonALot(mess, 1000, summon.GetMultiSummon(1000)) {
-			return
-		}
-	}
-
-	if util.KeyWordTrigger(mess.Content, "万连") {
-		if SummonALot(mess, 10000, summon.GetMultiSummon(10000)) {
-			return
-		}
-	}
-
 	if util.KeyWordTrigger(mess.Content, "abcd all") {
 		userData.UserRange(func(key, value interface{}) bool {
 			value.(*userData.User).SummonCardNum += 200
@@ -251,54 +225,4 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	}
 
 	plugin.FactoryInstance.Run(mess)
-}
-
-func SummonALot(mess model.Data, num int, summon func(*userData.User) summon.SummonRecord) bool {
-	user := userData.GetUser(mess.FromUserID)
-	if user.SummonCardNum >= num {
-		res := summon(user)
-		user.SummonCardNum -= num
-		if num == 10 {
-			url := res.ImageFormat(user.SummonCardNum, user.Water)
-			model.SendPic(mess.FromGroupID, 2, "", url)
-			userData.UserDataSave()
-		} else {
-			sort.Slice(res.Card, func(i, j int) bool {
-				if res.Card[i].Star == res.Card[j].Star {
-					return res.Card[i].New
-				}
-				return res.Card[i].Star > res.Card[j].Star
-			})
-			for {
-				OutStr := ""
-				if res.Card[10].Star == 5 {
-					if res.Card[10].New {
-						OutStr += "命运之子啊~你还有更多的五星~让我慢慢展示给你"
-					} else {
-						ssrNum := 0
-						for i := 10; i < len(res.Card); i++ {
-							if res.Card[i].Star == 5 {
-								ssrNum++
-							} else {
-								break
-							}
-						}
-						OutStr += fmt.Sprintf("没有更多的new了,未展示的虹共计%d个", ssrNum)
-					}
-				}
-				url := res.ImageFormat(user.SummonCardNum, user.Water)
-				model.SendPic(mess.FromGroupID, 2, OutStr, url)
-				if res.Card[10].Star == 5 && res.Card[10].New {
-					res.Card = res.Card[10:]
-				} else {
-					break
-				}
-				time.Sleep(time.Second * 2)
-			}
-		}
-		return true
-	} else {
-		model.Send(mess.FromGroupID, 2, "召唤券不够了"+random.RandomGetSuffix())
-	}
-	return false
 }

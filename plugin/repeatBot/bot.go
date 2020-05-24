@@ -39,12 +39,12 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return false, true
 }
 
-func (r repeatBot) Process(req *plugin.Request) *plugin.Result {
+func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{}
 	user := userData.GetUser(req.Udid)
 	eff := building.GetBuildEffect(user.BuildIndex)
 	num := int(float32(RandomSummonCard()*10) * eff.GetExtraRepeatBonus())
 	user.SummonCardNum += num
 	res.Content = fmt.Sprintf("%s%s\n(送%s殿下%d张🎟", util.FixSentense(req.Content), random.RandomGetSuffix(), req.NickName, num)
-	return res
+	return []*plugin.Result{res}
 }

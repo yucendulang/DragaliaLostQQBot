@@ -51,7 +51,7 @@ func (r *wordTriggerBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return false, true
 }
 
-func (r *wordTriggerBot) Process(req *plugin.Request) *plugin.Result {
-	res := &plugin.Result{Content: req.ExtraInfo.(string)}
+func (r *wordTriggerBot) Process(req *plugin.Request) []*plugin.Result {
+	res := []*plugin.Result{{Content: req.ExtraInfo.(string)}}
 	return res
 }

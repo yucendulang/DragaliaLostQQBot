@@ -13,6 +13,13 @@ func init() {
 	plugin.FactoryInstance.RegisterPlugin(&gachaBot{8})
 }
 
+var triggerMap = map[string]int{
+	"十连": 10,
+	"百连": 100,
+	"千连": 1000,
+	"万连": 10000,
+}
+
 type gachaBot struct {
 	priority int //[0~1000)
 }
@@ -21,23 +28,36 @@ func (g *gachaBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	if util.KeyWordTrigger(req.Content, "抽卡") || util.KeyWordTrigger(req.Content, "单抽") {
 		return true, false
 	}
+
+	if value, ok := triggerMap[req.Content]; ok {
+		req.ExtraInfo = value
+		return true, false
+	}
 	return false, true
 }
 
-func (g *gachaBot) Process(req *plugin.Request) *plugin.Result {
+func (g *gachaBot) Process(req *plugin.Request) []*plugin.Result {
 
-	user := userData.GetUser(req.Udid)
-	if user.SummonCardNum >= 1 {
-		res := summon.OneSummon(user)
-		user.SummonCardNum--
-		userData.UserDataSave()
-		img := res.ImageFormatV2(user.SummonCardNum, user.Water)
-		return &plugin.Result{
-			Pic: img,
+	if req.ExtraInfo != nil {
+		var res []*plugin.Result
+		num := req.ExtraInfo.(int)
+		for _, i2 := range SummonALot(req.Udid, num, summon.GetMultiSummon(num)) {
+			res = append(res, &plugin.Result{
+				Content: i2.string,
+				Pic:     i2.Image,
+			})
 		}
+		return res
 	} else {
-		return &plugin.Result{
-			Content: fmt.Sprintf("%s召唤券不够了%s", req.NickName, random.RandomGetSuffix()),
+		user := userData.GetUser(req.Udid)
+		if user.SummonCardNum >= 1 {
+			res := summon.OneSummon(user)
+			user.SummonCardNum--
+			userData.UserDataSave()
+			img := res.ImageFormatV2(user.SummonCardNum, user.Water)
+			return []*plugin.Result{{Pic: img}}
+		} else {
+			return []*plugin.Result{{Content: fmt.Sprintf("%s召唤券不够了%s", req.NickName, random.RandomGetSuffix())}}
 		}
 	}
 }

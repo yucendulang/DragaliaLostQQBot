@@ -74,7 +74,7 @@ func isRepeat(r *repeatV2Bot) bool {
 	return true
 }
 
-func (r *repeatV2Bot) Process(_ *plugin.Request) *plugin.Result {
-	res := &plugin.Result{Content: r.lastRepeat}
+func (r *repeatV2Bot) Process(_ *plugin.Request) []*plugin.Result {
+	res := []*plugin.Result{{Content: r.lastRepeat}}
 	return res
 }

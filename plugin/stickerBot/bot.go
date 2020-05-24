@@ -25,14 +25,14 @@ func (s *stickerBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	}
 }
 
-func (s *stickerBot) Process(req *plugin.Request) *plugin.Result {
+func (s *stickerBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{PicUrl: req.ExtraInfo.(string)}
-	if rand.Intn(100) < 2 {
+	if rand.Intn(100) < 10 {
 		url2, _ := IsStickerKey("磕头")
 		res.PicUrl = url2
 		res.Content = "\n轨迹阵亡...放弃 再次挑战"
 	}
-	return res
+	return []*plugin.Result{res}
 }
 
 func (s *stickerBot) Priority() int {

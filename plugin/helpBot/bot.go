@@ -19,7 +19,7 @@ func (h helpBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return true, false
 }
 
-func (h helpBot) Process(req *plugin.Request) *plugin.Result {
+func (h helpBot) Process(req *plugin.Request) []*plugin.Result {
 	//var cmd,cmd2,cmd3 string
 	//flagSet:=flag.NewFlagSet("修玛吉亚", 0)
 	//var buf bytes.Buffer
@@ -42,10 +42,9 @@ func (h helpBot) Process(req *plugin.Request) *plugin.Result {
 	res += "任何时候都可以得到修玛吉亚的复读,获得召唤卷若干\n"
 	res += "需要at我触发的有:@我 建造xxx 暂时只支持水祭坛/觉醒之岚树\n"
 	res += "@我 公告 获取最新信息\n"
-	return &plugin.Result{
+	return []*plugin.Result{{
 		Content: res,
-		//Content: buf.String(),
-	}
+	}}
 }
 
 func (h helpBot) Priority() int {

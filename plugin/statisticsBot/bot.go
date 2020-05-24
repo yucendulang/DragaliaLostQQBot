@@ -30,7 +30,7 @@ func (s *statisticsBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	return false, true
 }
 
-func (s *statisticsBot) Process(req *plugin.Request) *plugin.Result {
+func (s *statisticsBot) Process(req *plugin.Request) []*plugin.Result {
 	for _, pic := range req.GroupPics {
 		if value, ok := s.PicStatisticMap[pic.FileMd5]; ok {
 			value.Count++

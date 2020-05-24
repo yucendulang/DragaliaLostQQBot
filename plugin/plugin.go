@@ -31,7 +31,7 @@ type Request struct {
 
 type Interface interface {
 	IsTrigger(req *Request) (res bool, vNext bool)
-	Process(req *Request) *Result
+	Process(req *Request) []*Result
 	Priority() int
 }
 
@@ -96,24 +96,27 @@ func (f Factory) Run(data model.Data) {
 
 	for i := 0; i < len(f.interfaces); i++ {
 		p := f.interfaces[i]
+		req.ExtraInfo = nil
 		r, vNext := p.IsTrigger(req)
 		if r {
-			res := p.Process(req)
-			if res != nil {
-				if res.PicUrl != "" {
-					model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
-				} else if res.Content != "" {
-					model.Send(data.FromGroupID, 2, res.Content)
-				} else if res.Pic != nil {
-					url := printShuiYin(res, req)
-					model.SendPic(data.FromGroupID, 2, res.Content, url)
-				}
-				if res.DelayFunc != nil {
-					go func() {
-						fmt.Printf("enter DelayFunc")
-						outStr := res.DelayFunc()
-						model.Send(data.FromGroupID, 2, outStr)
-					}()
+			resList := p.Process(req)
+			if len(resList) != 0 {
+				for _, res := range resList {
+					if res.PicUrl != "" {
+						model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
+					} else if res.Pic != nil {
+						url := printShuiYin(res, req)
+						model.SendPic(data.FromGroupID, 2, res.Content, url)
+					} else if res.Content != "" {
+						model.Send(data.FromGroupID, 2, res.Content)
+					}
+					if res.DelayFunc != nil {
+						go func() {
+							fmt.Printf("enter DelayFunc")
+							outStr := res.DelayFunc()
+							model.Send(data.FromGroupID, 2, outStr)
+						}()
+					}
 				}
 			}
 		}
