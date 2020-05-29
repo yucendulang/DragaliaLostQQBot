@@ -10,8 +10,13 @@ type cardManager []*CardCollectionV2
 var CardMgr cardManager
 
 func (c cardManager) PickUpOne() *CardCollectionV2 {
-	ran := rand.Intn(len(c))
-	return c[ran]
+	ran1 := rand.Intn(2)
+	if ran1 == 0 {
+		return c[0]
+	} else {
+		ran := rand.Intn(len(c))
+		return c[ran]
+	}
 }
 
 func (c cardManager) PickUp(index int) *CardCollectionV2 {

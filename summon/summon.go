@@ -137,7 +137,7 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	if user.UnHitNumber >= 100 && index == 0 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
-	} else if ran < 400+user.UnHitNumber/10*50 {
+	} else if ran < 600+user.UnHitNumber/10*50 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
 	} else if ran < 2000+user.UnHitNumber/10*50 || index == 9 {
@@ -334,7 +334,9 @@ func productCardPng(card SummonCard) image.Image {
 		newPng := GetImage("New")
 		dpNewMin := image.Point{X: 33, Y: 0}
 		dpNewMax := dpNewMin.Add(newPng.Bounds().Max)
-		draw.Draw(cardPng.(*image.NRGBA), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, newPng, dp, draw.Over)
+
+		draw.Draw(cardPng.(draw.Image), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, newPng, dp, draw.Over)
+
 	} else {
 		blackBar := GetBlackMask(65, 15)
 		dpBBMin := image.Point{X: 10, Y: 60}
@@ -342,7 +344,7 @@ func productCardPng(card SummonCard) image.Image {
 			Min: dpBBMin,
 			Max: dpBBMin.Add(blackBar.Bounds().Max),
 		}
-		draw.Draw(cardPng.(*image.NRGBA), rectBB, blackBar, dp, draw.Over)
+		draw.Draw(cardPng.(draw.Image), rectBB, blackBar, dp, draw.Over)
 
 		waterFileName := ""
 		var width uint
@@ -376,11 +378,11 @@ func productCardPng(card SummonCard) image.Image {
 			Min: dpWaterMin,
 			Max: dpWaterMin.Add(blackBar.Bounds().Max),
 		}
-		draw.Draw(cardPng.(*image.NRGBA), rectWater, waterImg, dp, draw.Over)
+		draw.Draw(cardPng.(draw.Image), rectWater, waterImg, dp, draw.Over)
 
 		dpNewMin := image.Point{X: 0, Y: 46}
 		dpNewMax := dpNewMin.Add(waterIconImage.Bounds().Max)
-		draw.Draw(cardPng.(*image.NRGBA), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, waterIconImage, image.Point{X: 3}, draw.Over)
+		draw.Draw(cardPng.(draw.Image), image.Rectangle{Min: dpNewMin, Max: dpNewMax}, waterIconImage, image.Point{X: 3}, draw.Over)
 	}
 	return cardPng
 }

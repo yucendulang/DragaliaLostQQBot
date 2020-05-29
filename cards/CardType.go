@@ -6,7 +6,7 @@ type Card struct {
 	Title    string
 	Water    int
 	CardType int //1 is character 2 is dragon
-	rareType int //1 is common summon
+	rareType int //1-common 2-限定 3-fes
 	IconUrl  string
 }
 

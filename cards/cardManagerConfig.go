@@ -13,17 +13,18 @@ type CardSetConfig struct {
 func initConfig() []*cardMgrConfig {
 	var res []*cardMgrConfig
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
-		{star: 5, Prob: 100, pickUpCards: []int{189, 190}},
-		{star: 5, Prob: 80, pickUpCards: []int{191}},
-		{star: 5, cardType: 1, rareType: 1, Prob: 100},
-		{star: 5, cardType: 2, rareType: 1, Prob: 120},
-		{star: 4, Prob: 350, pickUpCards: []int{67}},
-		{star: 4, Prob: 350, pickUpCards: []int{169}},
+		{star: 5, Prob: 150, pickUpCards: []int{228, 229, 230}},
+		{star: 5, Prob: 80, pickUpCards: []int{231}},
+		{star: 5, cardType: 1, rareType: 3, Prob: 3 * 8},
+		{star: 5, cardType: 2, rareType: 3, Prob: 5},
+		{star: 5, cardType: 1, rareType: 1, Prob: 146},
+		{star: 5, cardType: 2, rareType: 1, Prob: 195},
+		{star: 5, Prob: 700, pickUpCards: []int{241}},
 		{star: 4, cardType: 1, rareType: 1, Prob: 505},
 		{star: 4, cardType: 2, rareType: 1, Prob: 395},
-		{star: 3, cardType: 1, rareType: 1, Prob: 4800},
-		{star: 3, cardType: 2, rareType: 1, Prob: 3200},
-	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/d/de/Summon_Showcase_%28Forte_and_Yurius%29_Summon_Top_Banner.png?version=e7cadef10d262b0f70acc65f7ab6ef3a"})
+		{star: 3, cardType: 1, rareType: 1, Prob: 4700},
+		{star: 3, cardType: 2, rareType: 1, Prob: 3100},
+	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/6/66/Gala_Dragalia_%28May_2020%29_Summon_Top_Banner.png?version=a9d11303eea27a11e68dcc78bce6012b"})
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 80, pickUpCards: []int{194}},
 		{star: 5, cardType: 1, rareType: 1, Prob: 120},
