@@ -137,7 +137,7 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	if user.UnHitNumber >= 100 && index == 0 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
-	} else if ran < 600+user.UnHitNumber/10*50 {
+	} else if ran < common.BaseSSRProbality*10+user.UnHitNumber/10*50 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
 	} else if ran < 2000+user.UnHitNumber/10*50 || index == 9 {
@@ -464,9 +464,11 @@ func (s *SummonRecord) CheckAndAddNew(user *userData.User) {
 
 func (s *SummonRecord) RaiseUnHitNumber(user *userData.User) {
 	if s.ContainSSR() {
+		//fmt.Println("概率清零")
 		user.UnHitNumber = 0
 	} else {
 		user.UnHitNumber += len(s.Card)
+		//fmt.Println("UnHitNumber", user.UnHitNumber)
 	}
 }
 

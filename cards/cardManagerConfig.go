@@ -19,7 +19,7 @@ func initConfig() []*cardMgrConfig {
 		{star: 5, cardType: 2, rareType: 3, Prob: 5},
 		{star: 5, cardType: 1, rareType: 1, Prob: 146},
 		{star: 5, cardType: 2, rareType: 1, Prob: 195},
-		{star: 5, Prob: 700, pickUpCards: []int{241}},
+		{star: 4, Prob: 700, pickUpCards: []int{241}},
 		{star: 4, cardType: 1, rareType: 1, Prob: 505},
 		{star: 4, cardType: 2, rareType: 1, Prob: 395},
 		{star: 3, cardType: 1, rareType: 1, Prob: 4700},
