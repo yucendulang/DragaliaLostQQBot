@@ -2,14 +2,13 @@ package summon
 
 import (
 	"fmt"
-	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/userData"
 	"math/rand"
 	"testing"
 	"time"
 )
 
-func TestTenSummon(t *testing.T) {
+func TestTenSummonWater(t *testing.T) {
 	tests := []struct {
 		name    string
 		wantRes SummonRecord
@@ -18,12 +17,12 @@ func TestTenSummon(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRes := GetMultiSummon(1000)(&userData.User{})
+			gotRes := GetMultiSummon(10000)(&userData.User{})
 			totalWater := 0
 			for _, card := range gotRes.Card {
 				totalWater += card.Water
 			}
-			fmt.Printf(gotRes.Format())
+			//fmt.Printf(gotRes.Format())
 			fmt.Println("Get water ", totalWater)
 		})
 	}
@@ -38,10 +37,10 @@ func TestTenSummonRate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			summonNum := 1000000
+			summonNum := 100000
 			rand.Seed(time.Now().Unix())
 			start := time.Now()
-			num1, num2, num3 := 0, 0, 0
+			num1 := 0
 			user := &userData.User{SummonCardNum: 10000000}
 			for i := 0; i < summonNum; i++ {
 				gotRes := TenSummon(user)
@@ -52,7 +51,7 @@ func TestTenSummonRate(t *testing.T) {
 				}
 			}
 			period := time.Since(start)
-			fmt.Println(num1, num2, num3, period.Milliseconds())
+			fmt.Println(num1, period.Milliseconds())
 			prob := float64(num1) / float64(summonNum)
 			if !(prob > 0.645 && prob < 0.65) {
 				t.Errorf("TenSummon() probability = %v, want %v", prob, "0.645-0.65")
@@ -97,25 +96,25 @@ func TestTenSummonRate(t *testing.T) {
 //		})
 //	}
 //}
-
-func TestSummonRecord_ImageFormat(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		{"basic"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			res := SummonRecord{
-				Desc: "",
-			}
-			for i := 0; i < 10; i++ {
-				res.Card = append(res.Card, SummonCard{
-					Card: cards.Cards[1],
-					New:  false,
-				})
-			}
-			fmt.Println(res.ImageFormat(0, 0))
-		})
-	}
-}
+//
+//func TestSummonRecord_ImageFormat(t *testing.T) {
+//	tests := []struct {
+//		name string
+//	}{
+//		{"basic"},
+//	}
+//	for _, tt := range tests {
+//		t.Run(tt.name, func(t *testing.T) {
+//			res := SummonRecord{
+//				Desc: "",
+//			}
+//			for i := 0; i < 10; i++ {
+//				res.Card = append(res.Card, SummonCard{
+//					Card: cards.Cards[1],
+//					New:  false,
+//				})
+//			}
+//			fmt.Println(res.ImageFormat(0, 0))
+//		})
+//	}
+//}
