@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"iotqq-plugins-demo/Go/achievement"
 	"iotqq-plugins-demo/Go/building"
 	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/common"
@@ -25,7 +26,14 @@ type User struct {
 	UnHitNumber         int
 	CardIndex           []int
 	BuildIndex          []common.BuildRecord
+	AchievementList     []common.AchievementRecord
 	LastVolunterGetTime time.Time
+	Static              Static
+}
+
+type Static struct {
+	VolunterReiceiveTime int
+	VolunterReiceiveMax  int
 }
 
 var userinfoPath = "d:\\userinfo"
@@ -145,4 +153,38 @@ func (u *User) GetMyHitRate(nickName string) string {
 
 func (u *User) GetHitRate() int {
 	return u.UnHitNumber
+}
+
+func (u *User) GetStatic() string {
+	return fmt.Sprintf("被赠送%d次,最高被赠送%d张", u.Static.VolunterReiceiveTime, u.Static.VolunterReiceiveMax)
+}
+
+func (u *User) GetAchievement() string {
+	m := map[int]time.Time{}
+	for i := range u.AchievementList {
+		m[u.AchievementList[i].Index] = u.AchievementList[i].AchievementTime
+	}
+	outStr := ""
+	outStr += fmt.Sprintf("%-24s%10s\n", "成就名称", "达成时间")
+	for i, value := range achievement.AchievementList {
+		time := "未完成"
+		if value, ok := m[i]; ok {
+			time = value.Format("2006-01-02 15:04:05")
+		}
+		outStr += fmt.Sprintf("%-24s%10s\n", value.Title, time)
+	}
+	return outStr
+}
+
+func (u *User) Achieve(id int) bool {
+	for _, record := range u.AchievementList {
+		if record.Index == id {
+			return false
+		}
+	}
+	u.AchievementList = append(u.AchievementList, common.AchievementRecord{
+		Index:           id,
+		AchievementTime: time.Now(),
+	})
+	return true
 }

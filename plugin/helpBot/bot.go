@@ -43,6 +43,8 @@ func (h helpBot) Process(req *plugin.Request) []*plugin.Result {
 	res += "需要at我触发的有:@我 建造xxx 暂时只支持水祭坛/觉醒之岚树/金币矿山\n"
 	res += "@我 公告 获取最新信息\n"
 	res += "@我 图鉴 查看图鉴\n"
+	res += "@我 成就 查看统计信息和成就\n"
+	res += "@我 统计 查看统计信息和成就\n"
 	return []*plugin.Result{{
 		Content: res,
 	}}

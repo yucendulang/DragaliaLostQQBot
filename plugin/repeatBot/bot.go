@@ -2,7 +2,9 @@ package repeatBot
 
 import (
 	"fmt"
+	"iotqq-plugins-demo/Go/achievement"
 	"iotqq-plugins-demo/Go/building"
+	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/plugin"
 	"iotqq-plugins-demo/Go/random"
 	"iotqq-plugins-demo/Go/summon"
@@ -24,8 +26,8 @@ func (r repeatBot) Priority() int {
 }
 
 func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
-	//if req.Udid==570966274{
-	//	return true,true
+	//if req.Udid == 570966274 {
+	//	return true, true
 	//}
 	content := util.FixSentense(req.Content)
 	if len(content) <= 30 && len(content) > 0 {
@@ -42,11 +44,27 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 
 func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{}
+	resL := []*plugin.Result{res}
 	user := userData.GetUser(req.Udid)
 	eff := building.GetBuildEffect(user.BuildIndex)
-	num := int(float32(RandomSummonCard()*10) * eff.GetExtraRepeatBonus())
+	base := RandomSummonCard() * 10
+	num := int(float32(base) * eff.GetExtraRepeatBonus())
+	if num > user.Static.VolunterReiceiveMax {
+		user.Static.VolunterReiceiveMax = num
+	}
+	if achievement.AchievementList[achievement.ReiceiveLotVolunter].Trigger(num) {
+		user.Achieve(achievement.ReiceiveLotVolunter)
+		resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.ReiceiveLotVolunter].Format()})
+	}
+	user.Static.VolunterReiceiveTime++
 	user.SummonCardNum += num
+
+	if base == 10 && user.LastVolunterGetTime.Add(common.VolunterMineProductPeriod).Sub(time.Now()).Minutes() < 30 {
+		user.Achieve(achievement.CoinMineRefresh)
+		resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.CoinMineRefresh].Format()})
+	}
 	user.LastVolunterGetTime = time.Now()
 	res.Content = fmt.Sprintf("%s%s\n(送%s殿下%d张🎟", util.FixSentense(req.Content), random.RandomGetSuffix(), req.NickName, num)
-	return []*plugin.Result{res}
+
+	return resL
 }

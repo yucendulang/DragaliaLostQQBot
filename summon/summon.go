@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
-	"github.com/mitchellh/hashstructure"
 	"github.com/nfnt/resize"
 	"image"
 	"image/color"
 	"image/draw"
-	"image/jpeg"
 	"image/png"
 	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/common"
@@ -64,7 +62,8 @@ type SummonRecord struct {
 
 type SummonCard struct {
 	cards.Card
-	New bool
+	New      bool
+	StackNum int
 }
 
 var (
@@ -176,7 +175,7 @@ func splitSummonV2(cardSets []*cards.CardSet) *SummonCard {
 	for _, cardSet := range cardSets {
 		gailv += cardSet.Prob
 		if ranSSR < gailv {
-			return &SummonCard{cardSet.PickOne(), false}
+			return &SummonCard{cardSet.PickOne(), false, 1}
 		}
 	}
 	panic("概率溢出")
@@ -233,18 +232,19 @@ func (s *SummonRecord) Format() string {
 	res += "bang bang bang bang love&die"
 	return res
 }
-func (s *SummonRecord) ImageFormat(volunterNum, water int) (url string) {
-	bgPng := s.ImageFormatV2(volunterNum, water)
 
-	hash, _ := hashstructure.Hash(s, nil)
-
-	path := "/asset/summon/cache/"
-	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
-
-	_ = jpeg.Encode(out, bgPng, nil)
-
-	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
-}
+//func (s *SummonRecord) ImageFormat(volunterNum, water int) (url string) {
+//	bgPng := s.ImageFormatV2(volunterNum, water)
+//
+//	hash, _ := hashstructure.Hash(s, nil)
+//
+//	path := "/asset/summon/cache/"
+//	out, _ := os.Create(fmt.Sprintf(".%s%d.jpg", path, hash))
+//
+//	_ = jpeg.Encode(out, bgPng, nil)
+//
+//	return fmt.Sprintf("http://localhost:12345%s%d.jpg", path, hash)
+//}
 
 func (s *SummonRecord) ImageFormatV2(volunterNum int, water int) image.Image {
 	bgPng := GetImage("background")
@@ -290,12 +290,18 @@ func (s *SummonRecord) ImageFormatV2(volunterNum int, water int) image.Image {
 
 func drawStatus(num int, point image.Point, icon, bgPng image.Image) {
 	blackBar := GetBlackMask(100, 20)
+	drawStatusWithBlackBar(strconv.Itoa(num), point, icon, bgPng, blackBar)
+}
+
+func drawStatusWithBlackBar(text string, point image.Point, icon image.Image, bgPng image.Image, blackBar *image.RGBA) {
 	face := truetype.NewFace(common.Font, &truetype.Options{Size: 13})
 	dc := gg.NewContextForImage(blackBar)
 	dc.SetFontFace(face)
 	dc.SetRGB(1, 1, 1)
-	dc.DrawStringAnchored(strconv.Itoa(num), float64(dc.Width()), float64(dc.Height()/2), 1.05, 0.5)
-	dc.DrawImage(icon, 0, 0)
+	dc.DrawStringAnchored(text, float64(dc.Width()), float64(dc.Height()/2), 1.05, 0.5)
+	if icon != nil {
+		dc.DrawImage(icon, 0, 0)
+	}
 	blackBar = dc.Image().(*image.RGBA)
 
 	rectBB := image.Rectangle{
@@ -318,7 +324,10 @@ func mergeTopBannerToBG(banner image.Image, bgPng image.Image) {
 
 func mergeCardToBG(card SummonCard, bgPng image.Image, dp1 image.Point) {
 	cardPng := productCardPng(card)
-
+	if card.StackNum > 1 {
+		blackBar := GetBlackMask(30, 20)
+		drawStatusWithBlackBar(fmt.Sprintf("X %d", card.StackNum), image.Point{X: 50, Y: 20}, nil, cardPng, blackBar)
+	}
 	//r := image.Rectangle{Min: dp, Max: dp.Add(dp2)} // 获得更换区域
 	dp2 := dp1.Add(cardPng.Bounds().Max)
 	draw.Draw(bgPng.(*image.NRGBA), image.Rectangle{Min: dp1, Max: dp2}, cardPng, image.Point{}, draw.Over)
@@ -479,4 +488,20 @@ func (s *SummonRecord) ContainSSR() bool {
 		}
 	}
 	return false
+}
+
+func (s *SummonRecord) StackCard() {
+	m := map[int]*SummonCard{}
+	for i, card := range s.Card {
+		if value, ok := m[card.ID]; ok {
+			value.StackNum++
+		} else {
+			m[card.ID] = &s.Card[i]
+		}
+	}
+	var summonCards []SummonCard
+	for _, value := range m {
+		summonCards = append(summonCards, *value)
+	}
+	s.Card = summonCards
 }

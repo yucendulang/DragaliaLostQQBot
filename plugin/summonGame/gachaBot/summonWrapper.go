@@ -14,22 +14,27 @@ type summonResult struct {
 	string
 }
 
-func SummonALot(udid int64, num int, summon func(*userData.User) summon.SummonRecord) []summonResult {
+func SummonALot(udid int64, num int, summonFunc func(*userData.User) summon.SummonRecord) []summonResult {
 	defer userData.UserDataSave()
 	user := userData.GetUser(udid)
 	if user.SummonCardNum >= num {
-		res := summon(user)
+		res := summonFunc(user)
 		user.SummonCardNum -= num
 		if num == 10 {
 			img := res.ImageFormatV2(user.SummonCardNum, user.Water)
 			return []summonResult{{img, ""}}
 		} else {
+			res.StackCard()
 			sort.Slice(res.Card, func(i, j int) bool {
-				if res.Card[i].Star == res.Card[j].Star {
+				if res.Card[i].Star != res.Card[j].Star {
+					return res.Card[i].Star > res.Card[j].Star
+				}
+				if res.Card[i].New != res.Card[j].New {
 					return res.Card[i].New
 				}
-				return res.Card[i].Star > res.Card[j].Star
+				return res.Card[i].StackNum > res.Card[j].StackNum
 			})
+
 			var sr []summonResult
 			for {
 				OutStr := ""

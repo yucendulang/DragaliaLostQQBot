@@ -17,6 +17,7 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/gachaBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/probabilityCalBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/queryBot"
+	_ "iotqq-plugins-demo/Go/plugin/summonGame/staticQueryBot"
 	_ "iotqq-plugins-demo/Go/plugin/wordTriggerBot"
 	"iotqq-plugins-demo/Go/random"
 	"iotqq-plugins-demo/Go/summon"
