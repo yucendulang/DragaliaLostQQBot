@@ -151,7 +151,7 @@ func (r *Recruit) TryRecruit() {
 				fmt.Println("enter close logic")
 				if flag {
 					for _, member := range r.member {
-						iotqq.Send2(r.qqgroupid, 2, r.questName+"发车"+random.RandomGetSuffix(), int(member.QQ))
+						iotqq.Send2(r.qqgroupid, 2, member.Nickname+"!"+r.questName+"发车"+random.RandomGetSuffix(), int(member.QQ))
 						time.Sleep(time.Second * 2)
 					}
 				} else {
