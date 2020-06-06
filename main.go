@@ -127,7 +127,10 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 		return
 	}
 	time.Sleep(1 * time.Second)
-	model.SendJoin(c, qq)
+	if !model.SendJoin(c, qq) {
+		fmt.Println("login failed.Retry...")
+		return
+	}
 
 	_ = <-fail
 	fmt.Println("some thing happen failed exit connect")
