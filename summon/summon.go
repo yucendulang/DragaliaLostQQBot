@@ -140,7 +140,7 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	if user.UnHitNumber >= 100 && index == 0 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
-	} else if ran < common.BaseSSRProbality*10+user.UnHitNumber/10*50 {
+	} else if ran < common.BaseSSRProbality*10+user.UnHitNumber/10*50+user.Static.RebornCount*50 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
 	} else if ran < 2000+user.UnHitNumber/10*50 || index == 9 {

@@ -150,7 +150,7 @@ func (u *User) GetBuildInfo() string {
 }
 
 func (u *User) GetMyHitRate(nickName string) string {
-	return fmt.Sprintf("%s殿下的概率:%.1f%%,继续%d次召唤提高概率", nickName, float32(common.BaseSSRProbality+u.UnHitNumber/10*5)/10, 10-u.UnHitNumber%10)
+	return fmt.Sprintf("%s殿下的概率:%.1f%%,继续%d次召唤提高概率", nickName, float32(common.BaseSSRProbality+(u.UnHitNumber/10+u.Static.RebornCount)*5)/10, 10-u.UnHitNumber%10)
 }
 
 func (u *User) GetHitRate() int {

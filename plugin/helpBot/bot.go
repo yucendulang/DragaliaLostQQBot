@@ -45,6 +45,7 @@ func (h helpBot) Process(req *plugin.Request) []*plugin.Result {
 	res += "@我 图鉴 查看图鉴\n"
 	res += "@我 成就 查看统计信息和成就\n"
 	res += "@我 统计 查看统计信息和成就\n"
+	res += "@我 转生 进行转生,转生一次永久提高0.5%虹率\n"
 	return []*plugin.Result{{
 		Content: res,
 	}}
