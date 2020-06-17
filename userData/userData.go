@@ -24,6 +24,7 @@ type User struct {
 	SummonCardNum       int
 	Water               int
 	UnHitNumber         int //每10次UnHitNumber增加0.5%虹率
+	RebornEggNumber     int
 	CardIndex           []int
 	BuildIndex          []common.BuildRecord
 	AchievementList     []common.AchievementRecord
@@ -34,6 +35,7 @@ type User struct {
 type Static struct {
 	VolunterReiceiveTime int
 	VolunterReiceiveMax  int
+	RebornCount          int
 }
 
 var userinfoPath = "d:\\userinfo"
@@ -114,7 +116,7 @@ func UserDataLoad() {
 
 func (u *User) GetAccountInfo() string {
 	res := ""
-	res += fmt.Sprintf("资产一览 召唤卷:%d🎟,水滴:%d💧", u.SummonCardNum, u.Water)
+	res += fmt.Sprintf("资产一览 召唤卷:%d🎟,水滴:%d💧,转生券数量:%d🎟", u.SummonCardNum, u.Water, u.RebornEggNumber)
 	return res
 }
 
@@ -156,7 +158,7 @@ func (u *User) GetHitRate() int {
 }
 
 func (u *User) GetStatic() string {
-	return fmt.Sprintf("被赠送%d次,最高被赠送%d张", u.Static.VolunterReiceiveTime, u.Static.VolunterReiceiveMax)
+	return fmt.Sprintf("被赠送%d次,最高被赠送%d张,转生%d次", u.Static.VolunterReiceiveTime, u.Static.VolunterReiceiveMax, u.Static.RebornCount)
 }
 
 func (u *User) GetAchievement() string {

@@ -1,8 +1,9 @@
 package gachaBot
 
 import (
-	"fmt"
 	"image"
+	"iotqq-plugins-demo/Go/achievement"
+	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/random"
 	"iotqq-plugins-demo/Go/summon"
 	"iotqq-plugins-demo/Go/userData"
@@ -17,6 +18,17 @@ type summonResult struct {
 func SummonALot(udid int64, num int, summonFunc func(*userData.User) summon.SummonRecord) []summonResult {
 	defer userData.UserDataSave()
 	user := userData.GetUser(udid)
+	sr := summonALotGacha(user, num, summonFunc)
+	//如果抽完卡满足了全图鉴
+	if len(user.CardIndex) == len(cards.Cards)-1 {
+		if user.Achieve(achievement.GaChaThemAll) {
+			sr = append(sr, summonResult{nil, achievement.AchievementList[achievement.GaChaThemAll].Format("")})
+		}
+	}
+	return sr
+}
+
+func summonALotGacha(user *userData.User, num int, summonFunc func(*userData.User) summon.SummonRecord) []summonResult {
 	if user.SummonCardNum >= num {
 		res := summonFunc(user)
 		user.SummonCardNum -= num
@@ -34,28 +46,35 @@ func SummonALot(udid int64, num int, summonFunc func(*userData.User) summon.Summ
 				}
 				return res.Card[i].StackNum > res.Card[j].StackNum
 			})
-
 			var sr []summonResult
+
+			if num == 100 {
+				sSRCount := res.CountSSR()
+				achies := []int{achievement.SummonGreatThan30SSR, achievement.SummonGreatThan20SSR,
+					achievement.SummonGreatThan10SSR, achievement.SummonEqual0SSR}
+				for _, item := range achies {
+					if achievement.AchievementList[item].Trigger(sSRCount) {
+						if user.Achieve(item) {
+							sr = append(sr, summonResult{nil, achievement.AchievementList[item].Format("")})
+						}
+						break
+					}
+				}
+			}
+
 			for {
 				OutStr := ""
+				if len(res.Card) < 10 {
+					sr = append(sr, summonResult{nil, "需要展示卡牌小于10张了,这个我暂时还不会"})
+					break
+				}
 				if res.Card[10].Star == 5 {
-					if res.Card[10].New {
-						OutStr += "\n命运之子啊~你还有更多的五星~让我慢慢展示给你"
-					} else {
-						ssrNum := 0
-						for i := 10; i < len(res.Card); i++ {
-							if res.Card[i].Star == 5 {
-								ssrNum++
-							} else {
-								break
-							}
-						}
-						OutStr += fmt.Sprintf("\n没有更多的new了,未展示的虹共计%d个", ssrNum)
-					}
+					//if res.Card[10].New {
+					OutStr += "\n命运之子啊~你还有更多的五星~让我慢慢展示给你"
 				}
 				img := res.ImageFormatV2(user.SummonCardNum, user.Water)
 				sr = append(sr, summonResult{img, OutStr})
-				if res.Card[10].Star == 5 && res.Card[10].New {
+				if res.Card[10].Star == 5 {
 					res.Card = res.Card[10:]
 				} else {
 					break

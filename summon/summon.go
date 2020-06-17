@@ -127,6 +127,10 @@ func SingleSummon(user *userData.User, index int) (res *SummonRecord) {
 }
 
 func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *cards.CardCollectionV2) *SummonRecord {
+	//if user.Udid == 570966274 {
+	//	user.UnHitNumber = 10000
+	//}
+
 	res := new(SummonRecord)
 	defer res.CheckAndAddNew(user)
 
@@ -488,6 +492,16 @@ func (s *SummonRecord) ContainSSR() bool {
 		}
 	}
 	return false
+}
+
+func (s *SummonRecord) CountSSR() int {
+	res := 0
+	for _, card := range s.Card {
+		if card.Star == 5 {
+			res += card.StackNum
+		}
+	}
+	return res
 }
 
 func (s *SummonRecord) StackCard() {

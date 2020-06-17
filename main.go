@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"iotqq-plugins-demo/Go/achievement"
 	"iotqq-plugins-demo/Go/building"
 	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/common"
@@ -91,6 +92,9 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 		return
 	}
 	err = c.On("OnGroupMsgs", func(h *gosocketio.Channel, args model.Message) {
+		//if args.CurrentPacket.Data.FromUserID != 570966274 {
+		//	return
+		//}
 		processGroupMsg(args, buildCommand, recruitexp, recruitCanjiaExp)
 
 	})
@@ -163,7 +167,17 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 
 	if util.KeyWordTrigger(mess.Content, "abcd coinmine") {
 		userData.UserRange(func(key, value interface{}) bool {
-			value.(*userData.User).BuildIndex = append(value.(*userData.User).BuildIndex, common.BuildRecord{Index: 2, Level: 1})
+			//value.(*userData.User).BuildIndex = append(value.(*userData.User).BuildIndex, common.BuildRecord{Index: 2, Level: 1})
+			index := -1
+			for i := range value.(*userData.User).AchievementList {
+				if value.(*userData.User).AchievementList[i].Index == achievement.SummonGreatThan20SSR {
+					index = i
+				}
+			}
+			if index == -1 {
+				return true
+			}
+			value.(*userData.User).AchievementList = append(value.(*userData.User).AchievementList[:index], value.(*userData.User).AchievementList[index+1:]...)
 			return true
 		})
 	}
