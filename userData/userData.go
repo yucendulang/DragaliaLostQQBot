@@ -125,7 +125,7 @@ func (u *User) GetCollection() string {
 	//	c[0], common.FiveStarCharacterNum, c[1], common.FourStarCharacterNum, c[2], common.ThreeStarCharacterNum)
 	//res += fmt.Sprintf("五星龙%d/%d,四星龙%d/%d,三星龙%d/%d",
 	//	c[3], common.FiveStarDragonNum, c[4], common.FourStarDragonNum, c[5], common.ThreeStarDragonNum)
-	res += fmt.Sprintf("图鉴完成度:%d/%d", len(u.CardIndex), len(cards.Cards))
+	res += fmt.Sprintf("图鉴完成度:%d/%d", len(u.CardIndex), len(cards.Cards)-1)
 	return res
 }
 

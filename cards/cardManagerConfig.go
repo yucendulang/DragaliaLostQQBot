@@ -13,6 +13,17 @@ type CardSetConfig struct {
 func initConfig() []*cardMgrConfig {
 	var res []*cardMgrConfig
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
+		{star: 5, Prob: 100, pickUpCards: []int{243, 244}},
+		{star: 5, Prob: 80, pickUpCards: []int{131}},
+		{star: 5, cardType: 1, rareType: 1, Prob: 100},
+		{star: 5, cardType: 2, rareType: 1, Prob: 120},
+		{star: 4, Prob: 700, pickUpCards: []int{76, 173}},
+		{star: 4, cardType: 1, rareType: 1, Prob: 505},
+		{star: 4, cardType: 2, rareType: 1, Prob: 395},
+		{star: 3, cardType: 1, rareType: 1, Prob: 4800},
+		{star: 3, cardType: 2, rareType: 1, Prob: 3200},
+	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/3/38/Nadine_and_Linnea%27s_United_Front_%28Summon_Showcase%29_Summon_Top_Banner.png?version=9c62ae52e8f9e68cc2e6f3c0e05b2bba"})
+	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 150, pickUpCards: []int{228, 229, 230}},
 		{star: 5, Prob: 80, pickUpCards: []int{231}},
 		{star: 5, cardType: 1, rareType: 3, Prob: 3 * 8},
@@ -107,7 +118,7 @@ func initConfig() []*cardMgrConfig {
 		{star: 5, Prob: 150, pickUpCards: []int{221, 222, 223}},
 		{star: 5, cardType: 1, rareType: 1, Prob: 100},
 		{star: 5, cardType: 2, rareType: 1, Prob: 150},
-		{star: 4, Prob: 600, pickUpCards: []int{224, 225, 226}},
+		{star: 4, Prob: 600, pickUpCards: []int{224, 225, 226, 242}},
 		{star: 4, cardType: 1, rareType: 1, Prob: 500},
 		{star: 4, cardType: 2, rareType: 1, Prob: 500},
 		{star: 3, Prob: 1000, pickUpCards: []int{227}},

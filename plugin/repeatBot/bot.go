@@ -60,8 +60,9 @@ func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 	user.SummonCardNum += num
 
 	if base == 10 && user.LastVolunterGetTime.Add(common.VolunterMineProductPeriod).Sub(time.Now()).Minutes() < 30 {
-		user.Achieve(achievement.CoinMineRefresh)
-		resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.CoinMineRefresh].Format()})
+		if user.Achieve(achievement.CoinMineRefresh) {
+			resL = append(resL, &plugin.Result{Content: req.NickName + achievement.AchievementList[achievement.CoinMineRefresh].Format()})
+		}
 	}
 	user.LastVolunterGetTime = time.Now()
 	res.Content = fmt.Sprintf("%s%s\n(送%s殿下%d张🎟", util.FixSentense(req.Content), random.RandomGetSuffix(), req.NickName, num)

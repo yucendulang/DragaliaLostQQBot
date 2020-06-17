@@ -10,7 +10,7 @@ type cardManager []*CardCollectionV2
 var CardMgr cardManager
 
 func (c cardManager) PickUpOne() *CardCollectionV2 {
-	ran1 := rand.Intn(2)
+	ran1 := rand.Intn(4)
 	if ran1 == 0 {
 		return c[0]
 	} else {

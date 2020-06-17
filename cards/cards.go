@@ -519,6 +519,12 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_202004/25/hbQ5-kormKcT8S28-28.png"},
 		{ID: 241, Star: 4, Title: "悟净", Water: 2200, CardType: 1, rareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202005/29/hbQ5-8j0qKdT8S28-28.png"},
+		{ID: 242, Star: 4, Title: "卢恩(万圣节Ver.)", Water: 2200, CardType: 1, rareType: 2,
+			IconUrl: "https://img.nga.178.com/attachments/mon_201910/19/hbQ5-bycoKdT8S28-28.png"},
+		{ID: 243, Star: 5, Title: "娜迪茵", Water: 8500, CardType: 1, rareType: 1,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-9390KcT8S28-28.png"},
+		{ID: 244, Star: 5, Title: "利娜修", Water: 8500, CardType: 1, rareType: 1,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
 	}
 	CardCollection = map[int]*CardSet{}
 	CardCollection[512] = &CardSet{star: 5, cardType: 1, rareType: 2, Prob: 100}

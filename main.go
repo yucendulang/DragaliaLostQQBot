@@ -60,7 +60,7 @@ func main() {
 	mq.Start()
 	recruitexp := regexp.MustCompile("招募(.*)缺([0-9])")
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
-	buildCommand := regexp.MustCompile("\"@修玛吉亚-Du 建造(.*?)\"")
+	buildCommand := regexp.MustCompile("\"(?:@修玛吉亚-Du|@矛盾的人偶) 建造(.*?)\"")
 
 	qq = "2834323101"
 	url1 = site + ":" + strconv.Itoa(port)
