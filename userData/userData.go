@@ -23,7 +23,7 @@ type User struct {
 	Udid                int64
 	SummonCardNum       int
 	Water               int
-	UnHitNumber         int
+	UnHitNumber         int //每10次UnHitNumber增加0.5%虹率
 	CardIndex           []int
 	BuildIndex          []common.BuildRecord
 	AchievementList     []common.AchievementRecord
