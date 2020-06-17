@@ -30,12 +30,13 @@ func (s *stickerBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 func (s *stickerBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{PicUrl: req.ExtraInfo.(string)}
 	resL := []*plugin.Result{res}
-	if rand.Intn(100) < 10 {
+	if rand.Intn(100) < 5 {
 		url2, _ := IsStickerKey("磕头")
 		res.PicUrl = url2
 		res.Content = "\n轨迹阵亡...放弃 再次挑战"
-		userData.GetUser(req.Udid).Achieve(achievement.StickerFailed)
-		resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.StickerFailed].Format()})
+		if userData.GetUser(req.Udid).Achieve(achievement.StickerFailed) {
+			resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.StickerFailed].Format(req.NickName)})
+		}
 	}
 	return resL
 }

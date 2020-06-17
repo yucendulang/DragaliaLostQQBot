@@ -9,8 +9,8 @@ type Achievement struct {
 	Trigger func(value interface{}) bool
 }
 
-func (a Achievement) Format() string {
-	return fmt.Sprintf("成就[%s]达成!", a.Title)
+func (a Achievement) Format(nickName string) string {
+	return fmt.Sprintf("%s成就[%s]达成!", nickName, a.Title)
 }
 
 const (

@@ -53,15 +53,16 @@ func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 		user.Static.VolunterReiceiveMax = num
 	}
 	if achievement.AchievementList[achievement.ReiceiveLotVolunter].Trigger(num) {
-		user.Achieve(achievement.ReiceiveLotVolunter)
-		resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.ReiceiveLotVolunter].Format()})
+		if user.Achieve(achievement.ReiceiveLotVolunter) {
+			resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.ReiceiveLotVolunter].Format(req.NickName)})
+		}
 	}
 	user.Static.VolunterReiceiveTime++
 	user.SummonCardNum += num
 
 	if base == 10 && user.LastVolunterGetTime.Add(common.VolunterMineProductPeriod).Sub(time.Now()).Minutes() < 30 {
 		if user.Achieve(achievement.CoinMineRefresh) {
-			resL = append(resL, &plugin.Result{Content: req.NickName + achievement.AchievementList[achievement.CoinMineRefresh].Format()})
+			resL = append(resL, &plugin.Result{Content: achievement.AchievementList[achievement.CoinMineRefresh].Format(req.NickName)})
 		}
 	}
 	user.LastVolunterGetTime = time.Now()
