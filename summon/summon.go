@@ -137,10 +137,12 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	ran := rand.Intn(10000)
 
 	res.TopBannerUrl = cardCollectionV2.TopBannerUrl
+	baseSSRProb := common.BaseSSRProbality*10 + user.UnHitNumber/10*50 + user.Static.RebornCount*50
+	fmt.Println("baseSSRProb:", baseSSRProb, "ran:", ran)
 	if user.UnHitNumber >= 100 && index == 0 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
-	} else if ran < common.BaseSSRProbality*10+user.UnHitNumber/10*50+user.Static.RebornCount*50 {
+	} else if ran < baseSSRProb {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
 	} else if ran < 2000+user.UnHitNumber/10*50 || index == 9 {

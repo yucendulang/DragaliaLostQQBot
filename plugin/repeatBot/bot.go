@@ -34,7 +34,9 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		//fmt.Println("enter repeatbot trigger")
 		user := userData.GetUser(req.Udid)
 		eff := building.GetBuildEffect(user.BuildIndex)
-		res := summon.OneSummon(&userData.User{UnHitNumber: eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10})
+		unHitNumber := eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10
+		fmt.Println("unHitNumber:", unHitNumber)
+		res := summon.OneSummon(&userData.User{UnHitNumber: unHitNumber})
 		if res.Card[0].Star == 5 {
 			return true, false
 		}

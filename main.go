@@ -41,6 +41,7 @@ var site = "127.0.0.1"
 var port = 8888
 
 func main() {
+	rand.Seed(time.Now().Unix())
 	model.StartPicServer(true)
 
 	//return
@@ -142,7 +143,7 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 }
 
 func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanjiaExp *regexp.Regexp) {
-	rand.Seed(time.Now().Unix())
+
 	var mess model.Data = args.CurrentPacket.Data
 
 	common.HistoryRecord.Push(mess.Content, mess.FromUserID)
