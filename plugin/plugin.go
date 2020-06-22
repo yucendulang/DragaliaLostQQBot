@@ -27,6 +27,7 @@ type Request struct {
 	IsAtMe    bool
 	ExtraInfo interface{}
 	GroupPics []model.GroupPic
+	Conf      *common.GroupMgrConfItem
 }
 
 type Interface interface {
@@ -68,7 +69,7 @@ func (f *Factory) RegisterPlugin(i Interface) {
 
 var AtMsgRegex = regexp.MustCompile("^@.*? (.*)$")
 
-func (f Factory) Run(data model.Data) {
+func (f Factory) Run(data model.Data, fn func(content, picUrl string)) {
 	req := &Request{Udid: data.FromUserID, NickName: util.FixName(data.FromNickName)}
 	if strings.HasPrefix(data.Content, "{") {
 		if msg, err := model.NewQQMsg(data.Content); err != nil {
@@ -89,6 +90,9 @@ func (f Factory) Run(data model.Data) {
 			req.GroupPics = msg.GroupPic
 		}
 	} else {
+		if data.FromUin != 0 {
+			req.IsAtMe = true
+		}
 		req.Content = data.Content
 	}
 
@@ -103,18 +107,21 @@ func (f Factory) Run(data model.Data) {
 			if len(resList) != 0 {
 				for _, res := range resList {
 					if res.PicUrl != "" {
-						model.SendPic(data.FromGroupID, 2, res.Content, res.PicUrl)
+						//model.SendPic(data.FromGroupID, sendToType, res.Content, res.PicUrl)
+						fn(res.Content, res.PicUrl)
 					} else if res.Pic != nil {
 						url := printShuiYin(res, req)
-						model.SendPic(data.FromGroupID, 2, res.Content, url)
+						//model.SendPic(data.FromGroupID, sendToType, res.Content, url)
+						fn(res.Content, url)
 					} else if res.Content != "" {
-						model.Send(data.FromGroupID, 2, res.Content)
+						//model.Send(data.FromGroupID, sendToType, res.Content)
+						fn(res.Content, "")
 					}
 					if res.DelayFunc != nil {
 						go func() {
 							fmt.Printf("enter DelayFunc")
 							outStr := res.DelayFunc()
-							model.Send(data.FromGroupID, 2, outStr)
+							fn(outStr, "")
 						}()
 					}
 				}

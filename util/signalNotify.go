@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-func SignalNotify() {
+func SignalNotify(f func()) {
 	fmt.Println("enter SignalNotify")
 	c := make(chan os.Signal)
 	//监听指定信号 ctrl+c kill
@@ -35,6 +35,8 @@ func SignalNotify() {
 					}
 					return true
 				})
+				fmt.Println("尝试运行其他逻辑")
+				f()
 				fmt.Println("退出程序")
 				os.Exit(0)
 			default:

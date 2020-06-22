@@ -103,6 +103,8 @@ type Data struct {
 	MsgTime       int         `json:"MsgTime"`
 	MsgType       string      `json:"MsgType"`
 	RedBaginfo    interface{} `json:"RedBaginfo"`
+	FromUin       int64       `json:"FromUin"`
+	ToUin         int64       `json:"ToUin"`
 }
 type Message struct {
 	CurrentPacket CurrentPacket `json:"CurrentPacket"`

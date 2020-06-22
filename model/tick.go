@@ -20,6 +20,8 @@ func StartTick() {
 				if time.Since(userInfo.LastVolunterGetTime) > common.VolunterMineProductPeriod {
 					userInfo.SummonCardNum += num
 					userInfo.LastVolunterGetTime = time.Now()
+					userInfo.Static.VRTPeriod = 0
+					userData.SaveUserByUDID(userInfo.Udid)
 					fmt.Println(userInfo.Udid, num, userInfo.LastVolunterGetTime)
 				}
 				return true

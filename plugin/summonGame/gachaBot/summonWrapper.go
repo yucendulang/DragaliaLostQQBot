@@ -16,7 +16,7 @@ type summonResult struct {
 }
 
 func SummonALot(udid int64, num int, summonFunc func(*userData.User) summon.SummonRecord) []summonResult {
-	defer userData.UserDataSave()
+	defer userData.SaveUserByUDID(udid)
 	user := userData.GetUser(udid)
 	sr := summonALotGacha(user, num, summonFunc)
 	//如果抽完卡满足了全图鉴

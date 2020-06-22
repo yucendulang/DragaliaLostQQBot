@@ -34,7 +34,7 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		//fmt.Println("enter repeatbot trigger")
 		user := userData.GetUser(req.Udid)
 		eff := building.GetBuildEffect(user.BuildIndex)
-		unHitNumber := eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10
+		unHitNumber := eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10 - user.Static.VRTPeriod*5
 		fmt.Println("unHitNumber:", unHitNumber)
 		res := summon.OneSummon(&userData.User{UnHitNumber: unHitNumber})
 		if res.Card[0].Star == 5 {
@@ -45,6 +45,7 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 }
 
 func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
+	defer userData.SaveUserByUDID(req.Udid)
 	res := &plugin.Result{}
 	resL := []*plugin.Result{res}
 	user := userData.GetUser(req.Udid)
@@ -60,6 +61,7 @@ func (r repeatBot) Process(req *plugin.Request) []*plugin.Result {
 		}
 	}
 	user.Static.VolunterReiceiveTime++
+	user.Static.VRTPeriod++
 	user.SummonCardNum += num
 
 	if base == 10 && user.LastVolunterGetTime.Add(common.VolunterMineProductPeriod).Sub(time.Now()).Minutes() < 30 {

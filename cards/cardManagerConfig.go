@@ -12,6 +12,8 @@ type CardSetConfig struct {
 
 func initConfig() []*cardMgrConfig {
 	var res []*cardMgrConfig
+
+	//当期池子永远第一位
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 100, pickUpCards: []int{243, 244}},
 		{star: 5, Prob: 80, pickUpCards: []int{131}},
@@ -23,6 +25,7 @@ func initConfig() []*cardMgrConfig {
 		{star: 3, cardType: 1, rareType: 1, Prob: 4800},
 		{star: 3, cardType: 2, rareType: 1, Prob: 3200},
 	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/3/38/Nadine_and_Linnea%27s_United_Front_%28Summon_Showcase%29_Summon_Top_Banner.png?version=9c62ae52e8f9e68cc2e6f3c0e05b2bba"})
+	//fes 池子永远第二位
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 150, pickUpCards: []int{228, 229, 230}},
 		{star: 5, Prob: 80, pickUpCards: []int{231}},

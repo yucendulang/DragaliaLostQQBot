@@ -53,7 +53,7 @@ func (g *gachaBot) Process(req *plugin.Request) []*plugin.Result {
 		if user.SummonCardNum >= 1 {
 			res := summon.OneSummon(user)
 			user.SummonCardNum--
-			userData.UserDataSave()
+			userData.SaveUserByUDID(req.Udid)
 			img := res.ImageFormatV2(user.SummonCardNum, user.Water)
 			return []*plugin.Result{{Pic: img}}
 		} else {

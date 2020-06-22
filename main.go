@@ -30,6 +30,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/graarh/golang-socketio"
@@ -55,7 +56,7 @@ func main() {
 	common.ThreeStarDragonNum = cards.GetCardsNumByStarType(3, 2)
 
 	userData.UserDataLoad()
-	util.SignalNotify()
+	util.SignalNotify(userData.UserDataSave)
 	util.RestoreRamVar()
 	summon.InitImageSource()
 	model.StartTick()
@@ -80,7 +81,10 @@ func main() {
 		}
 	}()
 
-	model.Periodlycall(60*time.Second, userData.UserDataSave)
+	//model.Periodlycall(60*time.Second, userData.UserDataSave)
+	model.Periodlycall(60*time.Second, func() {
+		fmt.Println("Server 60s tick ", time.Now().String())
+	})
 	//log.Println(" [x] Complete")
 }
 
@@ -104,13 +108,20 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 		log.Println(err)
 		return
 	}
-	err = c.On("OnFriendiotqqs", func(h *gosocketio.Channel, args model.Message) {
+	err = c.On("OnFriendMsgs", func(h *gosocketio.Channel, args model.Message) {
 		var mess model.Data = args.CurrentPacket.Data
 		log.Printf("私聊消息:%+v", mess)
-		if mess.FromUserID != 570966274 {
+		if mess.FromUin != 570966274 {
 			return
 		}
-		plugin.FactoryInstance.Run(mess)
+		mess.FromUserID = mess.FromUin
+		plugin.FactoryInstance.Run(mess, func(content, picUrl string) {
+			if picUrl != "" {
+				model.SendPic(int(mess.FromUin), 1, content, picUrl)
+			} else {
+				model.Send(int(mess.FromUin), 1, content)
+			}
+		})
 
 	})
 	if err != nil {
@@ -145,6 +156,19 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanjiaExp *regexp.Regexp) {
 
 	var mess model.Data = args.CurrentPacket.Data
+
+	if !common.GroupMgrConf.IsBotOn(int64(mess.FromGroupID)) {
+		if strings.Contains(mess.Content, ".bot on") && common.GroupMgrConf.IsManager(int64(mess.FromGroupID), mess.FromUserID) {
+			common.GroupMgrConf.GetByGroupID(int64(mess.FromGroupID)).IsBotOn = true
+			model.Send(mess.FromGroupID, 2, "bot on")
+		}
+		return
+	} else {
+		if strings.Contains(mess.Content, ".bot off") && common.GroupMgrConf.IsManager(int64(mess.FromGroupID), mess.FromUserID) {
+			common.GroupMgrConf.GetByGroupID(int64(mess.FromGroupID)).IsBotOn = false
+			model.Send(mess.FromGroupID, 2, "bot off")
+		}
+	}
 
 	common.HistoryRecord.Push(mess.Content, mess.FromUserID)
 
@@ -211,6 +235,7 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 
 				user.Water -= cost
 			}
+			userData.SaveUserByUDID(mess.FromUserID)
 			model.Send(mess.FromGroupID, 2, nickName+out+"花费"+strconv.Itoa(cost)+"💧")
 		} else {
 			model.Send(mess.FromGroupID, 2, nickName+out)
@@ -254,5 +279,11 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 		model.Send(mess.FromGroupID, 2, "echo back")
 	}
 
-	plugin.FactoryInstance.Run(mess)
+	plugin.FactoryInstance.Run(mess, func(content, picUrl string) {
+		if picUrl != "" {
+			model.SendPic(mess.FromGroupID, 2, content, picUrl)
+		} else {
+			model.Send(mess.FromGroupID, 2, content)
+		}
+	})
 }

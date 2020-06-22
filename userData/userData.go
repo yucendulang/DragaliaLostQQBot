@@ -36,6 +36,7 @@ type Static struct {
 	VolunterReiceiveTime int
 	VolunterReiceiveMax  int
 	RebornCount          int
+	VRTPeriod            int //VolunterReiceiveTimePeriod 金币矿山刷新之前的总赠券次数
 }
 
 var userinfoPath = "d:\\userinfo"
@@ -65,20 +66,29 @@ func UserDataSave() {
 	}
 	UserMap.Range(func(key, value interface{}) bool {
 		//fmt.Println("enter UserMap")
-		f, err := os.Create(userinfoPath + "\\" + strconv.Itoa(int(key.(int64))) + ".data")
-		defer f.Close()
+		return SaveUserByContent(key, value)
+	})
+}
 
+func SaveUserByUDID(udid int64) {
+	user := GetUser(udid)
+	SaveUserByContent(udid, user)
+}
+
+func SaveUserByContent(key interface{}, value interface{}) bool {
+	f, err := os.Create(userinfoPath + "\\" + strconv.Itoa(int(key.(int64))) + ".data")
+	defer f.Close()
+
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		b, err := json.Marshal(value)
+		_, err = f.Write(b)
 		if err != nil {
 			fmt.Println(err.Error())
-		} else {
-			b, err := json.Marshal(value)
-			_, err = f.Write(b)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
 		}
-		return true
-	})
+	}
+	return true
 }
 
 func UserDataLoad() {

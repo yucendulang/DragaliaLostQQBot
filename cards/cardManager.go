@@ -13,6 +13,8 @@ func (c cardManager) PickUpOne() *CardCollectionV2 {
 	ran1 := rand.Intn(4)
 	if ran1 == 0 {
 		return c[0]
+	} else if ran1 == 1 {
+		return c[1]
 	} else {
 		ran := rand.Intn(len(c))
 		return c[ran]
