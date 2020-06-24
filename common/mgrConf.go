@@ -48,10 +48,12 @@ func (g *GroupMgrConfType) read(id int64) *GroupMgrConfItem {
 	if res, ok := g.GroupMap[id]; ok {
 		return res
 	} else {
-		return &GroupMgrConfItem{
-			IsIntroOn: false,
-			IsBotOn:   false,
+		aa := &GroupMgrConfItem{
+			IsIntroOn: true,
+			IsBotOn:   true,
 		}
+		g.GroupMap[id] = aa
+		return aa
 	}
 }
 
