@@ -36,6 +36,10 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		eff := building.GetBuildEffect(user.BuildIndex)
 		unHitNumber := eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10 - user.Static.VRTPeriod*5
 		fmt.Println("unHitNumber:", unHitNumber)
+		//限制因为水祭坛过高导致的百分百虹率
+		if unHitNumber >= 100 {
+			unHitNumber = 90
+		}
 		res := summon.OneSummon(&userData.User{UnHitNumber: unHitNumber})
 		if res.Card[0].Star == 5 {
 			return true, false

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func SimAllIn(num int, card []int) string {
+func SimAllIn(num, cardPoolIndex int, card []int) string {
 	start := time.Now()
 	num1 := 0
 	max := 10000000 / num
@@ -19,7 +19,7 @@ func SimAllIn(num int, card []int) string {
 	for i := 0; i < max; i++ {
 		user := &userData.User{}
 		for j := 0; j < summonNum; j++ {
-			summon.TenSummon(user)
+			summon.TenSummonByCollection(user, cards.CardMgr.PickUp(cardPoolIndex))
 		}
 		gachaThemAll := true
 		for _, cardIndex := range card {
@@ -32,27 +32,28 @@ func SimAllIn(num int, card []int) string {
 		}
 	}
 	period := time.Since(start)
-	fmt.Printf("本次模拟耗时%ds\n", period.Milliseconds()/1000)
-	return fmt.Sprintf("进行%d次模拟,简化模型进行%d次十连召唤\n满足目标的概率为%.2f%%",
+	fmt.Printf("本次模拟耗时%ds", period.Milliseconds()/1000)
+	return fmt.Sprintf("进行%d次模拟,简化模型进行%d次十连召唤.满足目标的概率为%.2f%%",
 		max, summonNum, float32(num1)/float32(max)*100)
 
 }
 
-func SimMustGet(card []int) string {
-	return "not implement"
-}
+//func SimMustGet(card []int) string {
+//	return "not implement"
+//}
 
-func SimMustGetV2(card []int) string {
+func SimMustGet(card []int, cardPoolIndex int) string {
+	fmt.Println(card, cardPoolIndex)
 	start := time.Now()
-	max := 100000
+	max := 5000
 	sum := 0
 	for i := 0; i < max; i++ {
 		user := &userData.User{}
 		gachaThemAll := false
 		num := 10
 		for ; !gachaThemAll; num += 10 {
-			//todo
-			summon.TenSummonByCollection(user, cards.CardMgr.PickUp(1))
+			summon.TenSummonByCollection(user, cards.CardMgr.PickUp(cardPoolIndex))
+			//fmt.Println(len(user.CardIndex))
 			gachaThemAll = true
 			for _, cardIndex := range card {
 				if !util.IntContain(cardIndex, user.CardIndex) {
@@ -69,13 +70,17 @@ func SimMustGetV2(card []int) string {
 
 }
 
-func SimParse(cardNames string, drawNum int) (string, func() string, error) {
+func SimParse(cardNames string, drawNum, cardPoolIndex int) (string, func() string, error) {
 	names := strings.Split(cardNames, ",")
-	cards := cards.FindCardIndex(names)
-	for i := range cards {
-		if cards[i] == -1 {
+	cardIndexes := cards.FindCardIndex(names)
+	for i := range cardIndexes {
+		if cardIndexes[i] == -1 {
 			return "", nil, fmt.Errorf("找不到%s,敬爱的殿下请检查是否输入错召唤对象%s", names[i], random.RandomGetSuffix())
 		}
+	}
+	pickUp := cards.CardMgr.PickUp(cardPoolIndex)
+	if !pickUp.IsCardsExist(cardIndexes) {
+		return "", nil, fmt.Errorf("当前卡池找不到您要召唤的对象%s", random.RandomGetSuffix())
 	}
 
 	num := drawNum
@@ -87,13 +92,13 @@ func SimParse(cardNames string, drawNum int) (string, func() string, error) {
 	if num == 0 {
 		f = func() string {
 			out := fmt.Sprintf("敬爱的殿下,我抽晕了%s\n", random.RandomGetSuffix())
-			out += SimMustGet(cards)
+			out += SimMustGet(cardIndexes, cardPoolIndex)
 			return out
 		}
 	} else {
 		f = func() string {
-			allIn := SimAllIn(num, cards)
-			out := fmt.Sprintf("敬爱的殿下,我抽晕了%s\n", random.RandomGetSuffix())
+			allIn := SimAllIn(num, cardPoolIndex, cardIndexes)
+			out := fmt.Sprintf("敬爱的殿下,我抽晕了%s.", random.RandomGetSuffix())
 			out += allIn
 			return out
 		}

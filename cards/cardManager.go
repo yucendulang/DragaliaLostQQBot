@@ -22,6 +22,9 @@ func (c cardManager) PickUpOne() *CardCollectionV2 {
 }
 
 func (c cardManager) PickUp(index int) *CardCollectionV2 {
+	if index >= len(c) {
+		index = 0
+	}
 	return c[index]
 }
 

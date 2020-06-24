@@ -2,6 +2,7 @@ package summon
 
 import (
 	"fmt"
+	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/userData"
 	"math/rand"
 	"testing"
@@ -53,8 +54,14 @@ func TestTenSummonRate(t *testing.T) {
 			period := time.Since(start)
 			fmt.Println(num1, period.Milliseconds())
 			prob := float64(num1) / float64(summonNum)
-			if !(prob > 0.645 && prob < 0.65) {
-				t.Errorf("TenSummon() probability = %v, want %v", prob, "0.645-0.65")
+			if common.BaseSSRProbality == 40 {
+				if !(prob > 0.465 && prob < 0.475) {
+					t.Errorf("TenSummon() probability = %v, want %v", prob, "0.645-0.65")
+				}
+			} else {
+				if !(prob > 0.645 && prob < 0.65) {
+					t.Errorf("TenSummon() probability = %v, want %v", prob, "0.645-0.65")
+				}
 			}
 		})
 	}

@@ -24,7 +24,7 @@ func TestSimAllIn(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := SimAllIn(tt.args.num, tt.args.card)
+			got := SimAllIn(tt.args.num, 0, tt.args.card)
 			fmt.Println(got)
 		})
 	}
@@ -51,17 +51,18 @@ func TestSimSSRGet(t *testing.T) {
 
 func TestSimMustGet(t *testing.T) {
 	type args struct {
-		card []int
+		card          []int
+		cardPoolIndex int
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"basic", args{card: []int{194}}},
+		{"basic", args{card: []int{20}, cardPoolIndex: 0}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := SimMustGet(tt.args.card)
+			got := SimMustGet(tt.args.card, tt.args.cardPoolIndex)
 			fmt.Println(got)
 		})
 	}

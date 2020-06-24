@@ -20,11 +20,6 @@ type cardCollection map[int]*CardSet
 
 var CardCollection cardCollection
 
-type CardCollectionV2 struct {
-	cardSets     []*CardSet
-	TopBannerUrl string
-}
-
 type CardSet struct {
 	star     int
 	cardType int //1是character 2是Dragon
@@ -614,14 +609,4 @@ func getCardPool(key int) *CardSet {
 		log.Panic("could not find")
 	}
 	return nil
-}
-
-func (c CardCollectionV2) PickUpByStar(star int) []*CardSet {
-	var res []*CardSet
-	for _, set := range c.cardSets {
-		if set.star == star {
-			res = append(res, set)
-		}
-	}
-	return res
 }

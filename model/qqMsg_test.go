@@ -28,8 +28,8 @@ func TestNew(t *testing.T) {
 				t.Errorf("NewQQMsg() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewQQMsg() got = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got.Content, tt.want.Content) {
+				t.Errorf("NewQQMsg() got = %v, want %v", got.Content, tt.want.Content)
 			}
 		})
 	}

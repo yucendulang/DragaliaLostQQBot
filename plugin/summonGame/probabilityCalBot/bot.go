@@ -26,12 +26,18 @@ func (c *collectorBot) Process(req *plugin.Request) []*plugin.Result {
 	flagSet := flag.NewFlagSet("概率计算", 0)
 	var goalCard = flagSet.String("g", "", "goal card,split by comma")
 	var drawNum = flagSet.Int("d", 0, "draw time")
+	var cardPoolIndex = flagSet.Int("p", 0, "pool index")
 	var buf bytes.Buffer
 	flagSet.SetOutput(&buf)
 	flagSet.Parse(args[1:])
 
-	fmt.Println(*goalCard, *drawNum)
-	content, f, err := SimParse(*goalCard, *drawNum)
+	if (*goalCard) == "" {
+		flagSet.Usage()
+		return []*plugin.Result{{Content: buf.String()}}
+	}
+
+	fmt.Println(*goalCard, *drawNum, *cardPoolIndex)
+	content, f, err := SimParse(*goalCard, *drawNum, *cardPoolIndex)
 	if err != nil {
 		return []*plugin.Result{{Content: err.Error()}}
 	} else {
