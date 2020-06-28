@@ -62,7 +62,7 @@ func main() {
 	model.StartTick()
 	mq := model.MessageQueue{}
 	mq.Start()
-	recruitexp := regexp.MustCompile("招募(.*)缺([0-9])")
+	recruitexp := regexp.MustCompile("(.*)招募(.*)缺([0-9])")
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
 	buildCommand := regexp.MustCompile("\"(?:@修玛吉亚-Du|@矛盾的人偶) 建造(.*?)\"")
 
@@ -271,8 +271,12 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	rec := recruitexp.FindStringSubmatch(mess.Content)
 	if len(rec) > 0 {
 		fmt.Println("start recruit")
-		num, _ := strconv.Atoi(rec[2])
-		recruit := CreateRecruit(num, rec[1])
+		num, _ := strconv.Atoi(rec[3])
+		questName := rec[2]
+		if len(questName) == 0 {
+			questName = rec[1]
+		}
+		recruit := CreateRecruit(num, questName)
 		recruit.qqgroupid = mess.FromGroupID
 		recruit.ParticipateRecruit(Member{
 			QQ:       mess.FromUserID,
