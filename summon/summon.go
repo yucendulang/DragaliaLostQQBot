@@ -14,6 +14,7 @@ import (
 	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/userData"
 	"iotqq-plugins-demo/Go/util"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -444,7 +445,10 @@ func GetImage(name string) image.Image {
 }
 
 func GetImageByPath(path string) image.Image {
-	file, _ := os.Open(path)
+	file, err := os.Open(path)
+	if err != nil {
+		log.Panic("could not find ", path, err)
+	}
 	defer file.Close()
 	img, _ := png.Decode(file)
 	return img
