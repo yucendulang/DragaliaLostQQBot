@@ -39,7 +39,7 @@ type Static struct {
 	VRTPeriod            int //VolunterReiceiveTimePeriod 金币矿山刷新之前的总赠券次数
 }
 
-var userinfoPath = "d:\\userinfo"
+var userinfoPath = "./asset/userinfo"
 
 func GetUser(udid int64) *User {
 	user, _ := UserMap.LoadOrStore(udid, &User{
