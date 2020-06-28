@@ -35,7 +35,7 @@ func (r repeatBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		user := userData.GetUser(req.Udid)
 		eff := building.GetBuildEffect(user.BuildIndex)
 		unHitNumber := eff.RepeatProbability/2 - user.Static.VolunterReiceiveTime/10 - user.Static.VRTPeriod*5
-		fmt.Println("unHitNumber:", unHitNumber)
+		//fmt.Println("unHitNumber:", unHitNumber)
 		//限制因为水祭坛过高导致的百分百虹率
 		if unHitNumber >= 100 {
 			unHitNumber = 90

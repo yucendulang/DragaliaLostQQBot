@@ -37,9 +37,9 @@ func (m *MessageQueue) Start() {
 
 func (m *MessageQueue) sendOutOne() {
 	lastTime := time.Now().Sub(m.lastShoutOut).Seconds()
-	fmt.Println("sendOutOne", lastTime, time.Now())
+	//fmt.Println("sendOutOne", lastTime, time.Now())
 	if lastTime < 1 {
-		fmt.Println("will not call")
+		//fmt.Println("will not call")
 		return
 	}
 	m.Lock()
