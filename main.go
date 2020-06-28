@@ -296,9 +296,11 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	}
 
 	//if mess.Content == "testrapid" {
-	//	model.Send(mess.FromGroupID, 2, "echo back")
-	//	model.Send(mess.FromGroupID, 2, "echo back")
-	//	model.Send(mess.FromGroupID, 2, "echo back")
+	//	for i := 0; i < 10; i++ {
+	//		model.Send(992028272, 2, fmt.Sprint("echo back", i))
+	//		model.Send(1128869023, 2, fmt.Sprint("echo back", i))
+	//	}
+	//
 	//}
 
 	plugin.FactoryInstance.Run(mess, func(content, picUrl string) {

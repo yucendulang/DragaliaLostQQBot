@@ -158,7 +158,7 @@ func SendPic(ToUser int, SendToType int, Content string, PicUrl string) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Println(string(body))
-	})
+	}, int64(ToUser))
 }
 func Send(ToUser int, SendToType int, Content string) {
 	Send2(ToUser, SendToType, Content, 0)
@@ -184,7 +184,7 @@ func Send2(ToUser int, SendToType int, Content string, atUser int) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Println(string(body))
-	})
+	}, int64(ToUser))
 }
 func SendA(ToUser int, SendToType int, Content string, SendMsgType string) {
 	//发送其他信息
