@@ -10,7 +10,8 @@ import (
 type MessageQueue struct {
 	list list.List
 	sync.Mutex
-	in chan bool
+	in           chan bool
+	lastShoutOut time.Time
 }
 
 func init() {
@@ -28,22 +29,29 @@ func (m *MessageQueue) Start() {
 				m.sendOutOne()
 			case _ = <-m.in:
 				m.sendOutOne()
-				time.Sleep(time.Second * 1)
+				//time.Sleep(time.Second * 1)
 			}
 		}
 	}()
 }
 
 func (m *MessageQueue) sendOutOne() {
+	lastTime := time.Now().Sub(m.lastShoutOut).Seconds()
+	fmt.Println("sendOutOne", lastTime, time.Now())
+	if lastTime < 1 {
+		fmt.Println("will not call")
+		return
+	}
 	m.Lock()
 	defer m.Unlock()
 	if m.list.Len() == 0 {
 		return
 	}
 	f := m.list.Front().Value.(func())
-	fmt.Println("sendOutOne", time.Now())
+
 	f()
 	m.list.Remove(m.list.Front())
+	m.lastShoutOut = time.Now()
 }
 
 func (m *MessageQueue) addOne(f func()) {

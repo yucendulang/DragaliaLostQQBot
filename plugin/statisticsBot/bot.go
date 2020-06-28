@@ -3,7 +3,6 @@ package statisticsBot
 import (
 	"fmt"
 	"iotqq-plugins-demo/Go/plugin"
-	"iotqq-plugins-demo/Go/util"
 )
 
 type PicNode struct {
@@ -13,9 +12,9 @@ type PicNode struct {
 }
 
 func init() {
-	statisticsBot := &statisticsBot{priority: 1, PicStatisticMap: make(map[string]*PicNode)}
+	//statisticsBot := &statisticsBot{priority: 1, PicStatisticMap: make(map[string]*PicNode)}
 	//plugin.FactoryInstance.RegisterPlugin(statisticsBot)
-	util.SaveRamVar("PicStatisticMap", statisticsBot)
+	//util.SaveRamVar("PicStatisticMap", statisticsBot)
 }
 
 type statisticsBot struct {

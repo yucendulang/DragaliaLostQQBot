@@ -26,6 +26,7 @@ import (
 	"iotqq-plugins-demo/Go/util"
 	"log"
 	"math/rand"
+	"os"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -75,8 +76,25 @@ func main() {
 
 	go func() {
 		for {
-			connect(buildCommand, recruitexp, recruitCanjiaExp)
-			time.Sleep(time.Second * 5)
+			if len(os.Args) > 1 {
+				fmt.Println(len(os.Args))
+				//for {
+				//	//fmt.Print("-> ")
+				//	//text, _ := reader.ReadString('\n')
+				//	//// convert CRLF to LF
+				//	//text = strings.Replace(text, "\n", "", -1)
+				//	//text = strings.Replace(text, "\r", "", -1)
+				//	//
+				//	//if strings.Compare("hi", text) == 0 {
+				//	//	fmt.Println("hello, Yourself")
+				//	//}
+				//
+				//}
+				//plugin.FactoryInstance.Run()
+			} else {
+				connect(buildCommand, recruitexp, recruitCanjiaExp)
+				time.Sleep(time.Second * 5)
+			}
 		}
 	}()
 
@@ -182,6 +200,14 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	*/
 	nickName := util.FixName(mess.FromNickName)
 	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
+
+	if mess.FromUserID == 570966274 && util.KeyWordTrigger(mess.Content, "repeat") {
+		str := ""
+		for i := 0; i < 5005; i++ {
+			str += "囧"
+			model.Send(mess.FromGroupID, 2, fmt.Sprintf("%d%s", i, str))
+		}
+	}
 
 	//if util.KeyWordTrigger(mess.Content, "abcd all") {
 	//	userData.UserRange(func(key, value interface{}) bool {
