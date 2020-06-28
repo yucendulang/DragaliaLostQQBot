@@ -106,9 +106,9 @@ func (r *Recruit) CancelRecruit(close bool) {
 }
 
 func (r *Recruit) ParticipateRecruit(member Member) {
-	if r == nil {
-		return
-	}
+	//if r == nil {
+		//return
+	//}
 	for _, m := range r.member {
 		if m.QQ == member.QQ && m.QQ != 570966274 {
 			iotqq.Send(r.qqgroupid, 2, m.Nickname+"不能重复参加"+random.RandomGetSuffix())

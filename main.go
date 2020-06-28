@@ -292,10 +292,12 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 		fmt.Println("有人参加任务")
 		i, _ := strconv.Atoi(mess.Content)
 		r := GetRecruit(i)
-		r.ParticipateRecruit(Member{
-			QQ:       mess.FromUserID,
-			Nickname: nickName,
-		})
+		if r != nil && r.qqgroupid == mess.FromGroupID {
+			r.ParticipateRecruit(Member{
+				QQ:       mess.FromUserID,
+				Nickname: nickName,
+			})
+		}
 	}
 
 	if mess.Content == "c" {
