@@ -13,9 +13,9 @@ type PicNode struct {
 }
 
 func init() {
-	bot := &statisticsBot{priority: 1, PicStatisticMap: make(map[string]*PicNode)}
-	plugin.FactoryInstance.RegisterPlugin(bot)
-	util.SaveRamVar("PicStatisticMap", bot)
+	statisticsBot := &statisticsBot{priority: 1, PicStatisticMap: make(map[string]*PicNode)}
+	//plugin.FactoryInstance.RegisterPlugin(statisticsBot)
+	util.SaveRamVar("PicStatisticMap", statisticsBot)
 }
 
 type statisticsBot struct {

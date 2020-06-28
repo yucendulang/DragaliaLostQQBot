@@ -2,6 +2,7 @@ package common
 
 import (
 	"encoding/json"
+	"fmt"
 	"iotqq-plugins-demo/Go/util"
 	"sync"
 )
@@ -33,6 +34,7 @@ func (g *GroupMgrConfType) String() string {
 		js, _ := json.Marshal(item)
 		res += string(js)
 	}
+	res += fmt.Sprintf(" count:%d", len(g.GroupMap))
 	return res
 }
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"iotqq-plugins-demo/Go/achievement"
 	"iotqq-plugins-demo/Go/building"
 	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/common"
@@ -184,29 +183,29 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 	nickName := util.FixName(mess.FromNickName)
 	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
 
-	if util.KeyWordTrigger(mess.Content, "abcd all") {
-		userData.UserRange(func(key, value interface{}) bool {
-			value.(*userData.User).SummonCardNum += 200
-			return true
-		})
-	}
-
-	if util.KeyWordTrigger(mess.Content, "abcd coinmine") {
-		userData.UserRange(func(key, value interface{}) bool {
-			//value.(*userData.User).BuildIndex = append(value.(*userData.User).BuildIndex, common.BuildRecord{Index: 2, Level: 1})
-			index := -1
-			for i := range value.(*userData.User).AchievementList {
-				if value.(*userData.User).AchievementList[i].Index == achievement.SummonGreatThan20SSR {
-					index = i
-				}
-			}
-			if index == -1 {
-				return true
-			}
-			value.(*userData.User).AchievementList = append(value.(*userData.User).AchievementList[:index], value.(*userData.User).AchievementList[index+1:]...)
-			return true
-		})
-	}
+	//if util.KeyWordTrigger(mess.Content, "abcd all") {
+	//	userData.UserRange(func(key, value interface{}) bool {
+	//		value.(*userData.User).SummonCardNum += 200
+	//		return true
+	//	})
+	//}
+	//
+	//if util.KeyWordTrigger(mess.Content, "abcd coinmine") {
+	//	userData.UserRange(func(key, value interface{}) bool {
+	//		//value.(*userData.User).BuildIndex = append(value.(*userData.User).BuildIndex, common.BuildRecord{Index: 2, Level: 1})
+	//		index := -1
+	//		for i := range value.(*userData.User).AchievementList {
+	//			if value.(*userData.User).AchievementList[i].Index == achievement.SummonGreatThan20SSR {
+	//				index = i
+	//			}
+	//		}
+	//		if index == -1 {
+	//			return true
+	//		}
+	//		value.(*userData.User).AchievementList = append(value.(*userData.User).AchievementList[:index], value.(*userData.User).AchievementList[index+1:]...)
+	//		return true
+	//	})
+	//}
 
 	buildComm := buildCommand.FindStringSubmatch(mess.Content)
 	if len(buildComm) > 0 {
@@ -273,11 +272,11 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 		CancelAllRecruit(mess.FromUserID)
 	}
 
-	if mess.Content == "testrapid" {
-		model.Send(mess.FromGroupID, 2, "echo back")
-		model.Send(mess.FromGroupID, 2, "echo back")
-		model.Send(mess.FromGroupID, 2, "echo back")
-	}
+	//if mess.Content == "testrapid" {
+	//	model.Send(mess.FromGroupID, 2, "echo back")
+	//	model.Send(mess.FromGroupID, 2, "echo back")
+	//	model.Send(mess.FromGroupID, 2, "echo back")
+	//}
 
 	plugin.FactoryInstance.Run(mess, func(content, picUrl string) {
 		if picUrl != "" {
