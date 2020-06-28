@@ -76,7 +76,7 @@ func SaveUserByUDID(udid int64) {
 }
 
 func SaveUserByContent(key interface{}, value interface{}) bool {
-	f, err := os.Create(userinfoPath + "\\" + strconv.Itoa(int(key.(int64))) + ".data")
+	f, err := os.Create(userinfoPath + "/" + strconv.Itoa(int(key.(int64))) + ".data")
 	defer f.Close()
 
 	if err != nil {
