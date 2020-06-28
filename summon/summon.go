@@ -347,7 +347,7 @@ func productCardPng(card SummonCard) image.Image {
 	}
 	dp := image.Point{}
 	if card.New {
-		newPng := GetImage("New")
+		newPng := GetImage("new")
 		dpNewMin := image.Point{X: 33, Y: 0}
 		dpNewMax := dpNewMin.Add(newPng.Bounds().Max)
 
