@@ -39,7 +39,7 @@ type Static struct {
 	VRTPeriod            int //VolunterReiceiveTimePeriod 金币矿山刷新之前的总赠券次数
 }
 
-var userinfoPath = "./asset/userinfo"
+const userinfoPath = "./asset/userinfo"
 
 func GetUser(udid int64) *User {
 	user, _ := UserMap.LoadOrStore(udid, &User{
@@ -95,6 +95,7 @@ func UserDataLoad() {
 	s, err := os.Stat(userinfoPath)
 	if err != nil {
 		fmt.Println("could not find userinfo", err.Error())
+		os.Mkdir(userinfoPath, os.ModePerm)
 		return
 	}
 

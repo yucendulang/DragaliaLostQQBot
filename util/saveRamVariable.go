@@ -21,6 +21,18 @@ func SaveRamVar(name string, v expvar.Var) {
 
 func RestoreRamVar() {
 	fmt.Println("RestoreRamVar")
+
+	s, err := os.Stat(ramVarPath)
+	if err != nil {
+		fmt.Println("could not find userinfo", err.Error())
+		os.Mkdir(ramVarPath, os.ModePerm)
+		return
+	}
+
+	if !s.IsDir() {
+		fmt.Println("userinfo is not a dir")
+	}
+
 	filepath.Walk(ramVarPath, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
