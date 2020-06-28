@@ -37,11 +37,20 @@ import (
 	"github.com/graarh/golang-socketio/transport"
 )
 
-var url1, qq string
+var url1 string
 var site = "127.0.0.1"
 var port = 8888
 
 func main() {
+	if len(os.Args) > 1 {
+		for i, arg := range os.Args {
+			fmt.Println("参数", i, "是", arg)
+		}
+		common.QQ = os.Args[1]
+		i, _ := strconv.Atoi(os.Args[1])
+		common.QQInt = int64(i)
+	}
+
 	rand.Seed(time.Now().Unix())
 	model.StartPicServer(true)
 
@@ -66,35 +75,17 @@ func main() {
 	recruitCanjiaExp := regexp.MustCompile("^[0-9]$")
 	buildCommand := regexp.MustCompile("\"(?:@修玛吉亚-Du|@矛盾的人偶) 建造(.*?)\"")
 
-	qq = "2834323101"
 	url1 = site + ":" + strconv.Itoa(port)
-	model.Set(url1, qq, &mq)
+	model.Set(url1, common.QQ, &mq)
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	qqInt, _ := strconv.Atoi(qq)
-	plugin.FactoryInstance.SetOptions(int64(qqInt))
+	plugin.FactoryInstance.SetOptions(common.QQInt)
 
 	go func() {
+
 		for {
-			if len(os.Args) > 1 {
-				fmt.Println(len(os.Args))
-				//for {
-				//	//fmt.Print("-> ")
-				//	//text, _ := reader.ReadString('\n')
-				//	//// convert CRLF to LF
-				//	//text = strings.Replace(text, "\n", "", -1)
-				//	//text = strings.Replace(text, "\r", "", -1)
-				//	//
-				//	//if strings.Compare("hi", text) == 0 {
-				//	//	fmt.Println("hello, Yourself")
-				//	//}
-				//
-				//}
-				//plugin.FactoryInstance.Run()
-			} else {
-				connect(buildCommand, recruitexp, recruitCanjiaExp)
-				time.Sleep(time.Second * 5)
-			}
+			connect(buildCommand, recruitexp, recruitCanjiaExp)
+			time.Sleep(time.Second * 5)
 		}
 	}()
 
@@ -161,7 +152,7 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 		return
 	}
 	time.Sleep(1 * time.Second)
-	if !model.SendJoin(c, qq) {
+	if !model.SendJoin(c, common.QQ) {
 		fmt.Println("login failed.Retry...")
 		return
 	}
@@ -187,9 +178,9 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 		}
 	}
 
-	common.HistoryRecord.Push(mess.Content, mess.FromUserID)
+	common.HistoryRecord.Push(mess.Content, mess.FromUserID, int64(mess.FromGroupID))
 
-	if q, _ := strconv.Atoi(qq); mess.FromUserID == int64(q) {
+	if mess.FromUserID == common.QQInt {
 		return
 	}
 	/*

@@ -107,7 +107,7 @@ func (r *Recruit) CancelRecruit(close bool) {
 
 func (r *Recruit) ParticipateRecruit(member Member) {
 	//if r == nil {
-		//return
+	//return
 	//}
 	for _, m := range r.member {
 		if m.QQ == member.QQ && m.QQ != 570966274 {
@@ -169,7 +169,7 @@ func (r *Recruit) TryRecruit() {
 
 func (r *Recruit) shoutOut() {
 	res := r.GetRecruitAd()
-	if common.HistoryRecord.IsExist(res, selfTempQQ) {
+	if common.HistoryRecord.IsExist(res, common.QQInt, int64(r.qqgroupid)) {
 		fmt.Println("found recruit already")
 		return
 	}
