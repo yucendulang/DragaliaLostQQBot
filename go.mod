@@ -3,6 +3,7 @@ module iotqq-plugins-demo/Go
 go 1.14
 
 require (
+	github.com/Wall-ee/chinese2digits v0.0.0-20200531124722-3da9c030a8a9
 	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gorilla/websocket v1.4.2 // indirect

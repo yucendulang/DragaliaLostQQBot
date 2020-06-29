@@ -39,7 +39,7 @@ func (h helpBot) Process(req *plugin.Request) []*plugin.Result {
 	case "帮助":
 		fallthrough
 	case "help":
-		res += "不需要at我就能直接触发的有:单抽 十连 百连 千连 万连可以触发抽卡逻辑\n"
+		res += "不需要at我的有:单抽 以及xx连(英雄连不行) 例如'一百零八连' 触发抽卡逻辑\n"
 		res += "输入表情包的名字可以获取对应表情一张\n"
 		res += "招募xx缺x可以触发招募逻辑\n"
 		//res += "呼唤人气群友的名字可以获得灵魂拷问一次\n"

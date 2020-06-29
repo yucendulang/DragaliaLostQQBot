@@ -217,6 +217,11 @@ func GetMultiSummon(num int) func(user *userData.User) (res SummonRecord) {
 			res.Card = append(res.Card, tenSummon.Card...)
 			res.Desc = tenSummon.Desc
 		}
+		for i := 0; i < num%10; i++ {
+			tenSummon := singleSummonByCollection(user, 0, cardColl)
+			res.Card = append(res.Card, tenSummon.Card...)
+			res.Desc = tenSummon.Desc
+		}
 		return
 	}
 }
@@ -267,16 +272,23 @@ func (s *SummonRecord) ImageFormatV2(volunterNum int, water int) image.Image {
 		heightbase, height := 80, 100
 		twoColbase, twoColWidth := 70, 120
 		threeColbase, threeColWidth := 30, 100
-		mergeCardToBG(s.Card[0], bgPng, image.Point{X: twoColbase, Y: heightbase})
-		mergeCardToBG(s.Card[1], bgPng, image.Point{X: twoColbase + twoColWidth, Y: heightbase})
-		mergeCardToBG(s.Card[2], bgPng, image.Point{X: threeColbase, Y: heightbase + height*1})
-		mergeCardToBG(s.Card[3], bgPng, image.Point{X: threeColbase + threeColWidth*1, Y: heightbase + height*1})
-		mergeCardToBG(s.Card[4], bgPng, image.Point{X: threeColbase + threeColWidth*2, Y: heightbase + height*1})
-		mergeCardToBG(s.Card[5], bgPng, image.Point{X: threeColbase, Y: heightbase + height*2})
-		mergeCardToBG(s.Card[6], bgPng, image.Point{X: threeColbase + threeColWidth*1, Y: heightbase + height*2})
-		mergeCardToBG(s.Card[7], bgPng, image.Point{X: threeColbase + threeColWidth*2, Y: heightbase + height*2})
-		mergeCardToBG(s.Card[8], bgPng, image.Point{X: twoColbase, Y: heightbase + height*3})
-		mergeCardToBG(s.Card[9], bgPng, image.Point{X: twoColbase + twoColWidth, Y: heightbase + height*3})
+		points := []image.Point{
+			{X: twoColbase, Y: heightbase},
+			{X: twoColbase + twoColWidth, Y: heightbase},
+			{X: threeColbase, Y: heightbase + height*1},
+			{X: threeColbase + threeColWidth*1, Y: heightbase + height*1},
+			{X: threeColbase + threeColWidth*2, Y: heightbase + height*1},
+			{X: threeColbase, Y: heightbase + height*2},
+			{X: threeColbase + threeColWidth*1, Y: heightbase + height*2},
+			{X: threeColbase + threeColWidth*2, Y: heightbase + height*2},
+			{X: twoColbase, Y: heightbase + height*3},
+			{X: twoColbase + twoColWidth, Y: heightbase + height*3}}
+		for i := range s.Card {
+			mergeCardToBG(s.Card[i], bgPng, points[i])
+			if i == 9 {
+				break
+			}
+		}
 	} else {
 		mergeCardToBG(s.Card[0], bgPng, image.Point{X: 130, Y: 230})
 	}
