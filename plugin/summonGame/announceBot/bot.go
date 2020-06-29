@@ -22,7 +22,7 @@ func (a *announceBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 
 func (a *announceBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{}
-	out := "卡池变化:大幅增加了fes卡池出现的概率,但是总体概率都是跟随着现在游戏卡池概率,也就是fes卡池的虹率也是4%\n"
+	out := "卡池变化:fes卡池出现概率增加,新加人物以及龙,等官方头像和banner出现再换\n"
 	out += "新增功能:概率计算\n"
 	res.Content = out
 

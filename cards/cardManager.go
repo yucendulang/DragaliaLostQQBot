@@ -47,6 +47,7 @@ func init() {
 				cards:    cards,
 			})
 			cardCollection.TopBannerUrl = config.topBannerUrl
+			cardCollection.ProbFix = config.probFix
 			pickUpCards = append(pickUpCards, poolConfig.pickUpCards...)
 		}
 

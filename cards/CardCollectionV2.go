@@ -3,6 +3,7 @@ package cards
 type CardCollectionV2 struct {
 	cardSets     []*CardSet
 	TopBannerUrl string
+	ProbFix      int
 }
 
 func (c CardCollectionV2) PickUpByStar(star int) []*CardSet {

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/nfnt/resize"
 	"image"
 	"image/color"
 	"image/draw"
@@ -90,6 +91,9 @@ func newCollectionImage(star, cardType, isOwn int, cardIndex []int) *image.RGBA 
 	row, col := 0, 0
 	for _, card := range pc {
 		cardImg := summon.GetCardImage(card.IconUrl)
+		if cardImg.Bounds().Dx() != 80 {
+			cardImg = resize.Resize(80, 80, cardImg, resize.Lanczos3)
+		}
 		dp := image.Point{X: 80 * row, Y: 80 * col}
 		col += (row + 1) / rowNum
 		row = (row + 1) % rowNum

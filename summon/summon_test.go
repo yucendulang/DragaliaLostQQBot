@@ -2,6 +2,7 @@ package summon
 
 import (
 	"fmt"
+	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/common"
 	"iotqq-plugins-demo/Go/userData"
 	"math/rand"
@@ -43,8 +44,9 @@ func TestTenSummonRate(t *testing.T) {
 			start := time.Now()
 			num1 := 0
 			user := &userData.User{SummonCardNum: 10000000}
+			coll := cards.CardMgr.PickUp(0)
 			for i := 0; i < summonNum; i++ {
-				gotRes := TenSummon(user)
+				gotRes := TenSummonByCollection(user, coll)
 				for _, card := range gotRes.Card {
 					if card.Star == 5 {
 						num1++
@@ -54,9 +56,9 @@ func TestTenSummonRate(t *testing.T) {
 			period := time.Since(start)
 			fmt.Println(num1, period.Milliseconds())
 			prob := float64(num1) / float64(summonNum)
-			if common.BaseSSRProbality == 40 {
+			if common.BaseSSRProbality+coll.ProbFix == 40 {
 				if !(prob > 0.465 && prob < 0.475) {
-					t.Errorf("TenSummon() probability = %v, want %v", prob, "0.645-0.65")
+					t.Errorf("TenSummon() probability = %v, want %v", prob, "0.465-0.475")
 				}
 			} else {
 				if !(prob > 0.645 && prob < 0.65) {

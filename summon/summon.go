@@ -143,7 +143,7 @@ func singleSummonByCollection(user *userData.User, index int, cardCollectionV2 *
 	if user.UnHitNumber >= 100 && index == 0 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
-	} else if ran < baseSSRProb {
+	} else if ran < baseSSRProb+cardCollectionV2.ProbFix*10 {
 		cardSets := cardCollectionV2.PickUpByStar(5)
 		res.Card = append(res.Card, *splitSummonV2(cardSets))
 	} else if ran < 2000+user.UnHitNumber/10*50 || index == 9 {
@@ -315,7 +315,14 @@ func drawStatusWithBlackBar(text string, point image.Point, icon image.Image, bg
 		Min: point,
 		Max: point.Add(blackBar.Bounds().Max),
 	}
-	draw.Draw(bgPng.(*image.NRGBA), rectBB, blackBar, image.Point{}, draw.Over)
+
+	switch bgPng.(type) {
+	case *image.NRGBA:
+		draw.Draw(bgPng.(*image.NRGBA), rectBB, blackBar, image.Point{}, draw.Over)
+	case *image.RGBA64:
+		draw.Draw(bgPng.(*image.RGBA64), rectBB, blackBar, image.Point{}, draw.Over)
+	}
+
 }
 
 func mergeTopBannerToBG(banner image.Image, bgPng image.Image) {
@@ -345,6 +352,8 @@ func productCardPng(card SummonCard) image.Image {
 	if cardPng == nil {
 		panic(strconv.Itoa(card.ID) + card.IconUrl)
 	}
+	cardPng = resize.Resize(80, 80, cardPng, resize.Lanczos3)
+
 	dp := image.Point{}
 	if card.New {
 		newPng := GetImage("new")

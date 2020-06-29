@@ -520,6 +520,16 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-9390KcT8S28-28.png"},
 		{ID: 244, Star: 5, Title: "利娜修", Water: 8500, CardType: 1, rareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
+		{ID: 245, Star: 5, Title: "凯特西", Water: 8500, CardType: 2, rareType: 3,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-k3mhZgT3cSg4-go.png"},
+		{ID: 246, Star: 5, Title: "斯提克斯", Water: 8500, CardType: 2, rareType: 1,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-9tsjZjT3cSg4-go.png"},
+		{ID: 247, Star: 5, Title: "尤金", Water: 8500, CardType: 1, rareType: 1,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-cyv5Z13T3cSg4-go.png"},
+		{ID: 248, Star: 5, Title: "凯瑟琳", Water: 8500, CardType: 1, rareType: 1,
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-2fsoZ14T3cSg4-go.png"},
+		//{ID: 246, Star: 5, Title: "利娜修", Water: 8500, CardType: 1, rareType: 1,
+		//	IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
 	}
 	CardCollection = map[int]*CardSet{}
 	CardCollection[512] = &CardSet{star: 5, cardType: 1, rareType: 2, Prob: 100}

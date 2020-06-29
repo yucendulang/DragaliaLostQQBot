@@ -4,6 +4,7 @@ type cardMgrConfig struct {
 	configs      []*CardSetConfig
 	topBannerUrl string
 	name         string
+	probFix      int
 }
 
 type CardSetConfig struct {
@@ -16,6 +17,23 @@ func initConfig() []*cardMgrConfig {
 
 	//当期池子永远第一位
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
+		{star: 5, Prob: 150, pickUpCards: []int{246, 247, 248}},
+		{star: 5, Prob: 80, pickUpCards: []int{245}},
+		{star: 5, cardType: 1, rareType: 3, Prob: 3 * 8},
+		{star: 5, cardType: 2, rareType: 3, Prob: 5},
+		{star: 5, cardType: 1, rareType: 1, Prob: 146},
+		{star: 5, cardType: 2, rareType: 1, Prob: 195},
+		{star: 4, Prob: 700, pickUpCards: []int{241}},
+		{star: 4, cardType: 1, rareType: 1, Prob: 505},
+		{star: 4, cardType: 2, rareType: 1, Prob: 395},
+		{star: 3, cardType: 1, rareType: 1, Prob: 4700},
+		{star: 3, cardType: 2, rareType: 1, Prob: 3100},
+	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/6/66/Gala_Dragalia_%28May_2020%29_Summon_Top_Banner.png?version=a9d11303eea27a11e68dcc78bce6012b",
+		probFix: 20})
+	//fes 池子永远第二位
+	res = append(res, res[0])
+
+	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 100, pickUpCards: []int{243, 244}},
 		{star: 5, Prob: 80, pickUpCards: []int{131}},
 		{star: 5, cardType: 1, rareType: 1, Prob: 100},
@@ -27,20 +45,6 @@ func initConfig() []*cardMgrConfig {
 		{star: 3, cardType: 2, rareType: 1, Prob: 3200},
 	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/3/38/Nadine_and_Linnea%27s_United_Front_%28Summon_Showcase%29_Summon_Top_Banner.png?version=9c62ae52e8f9e68cc2e6f3c0e05b2bba",
 		name: "普池"})
-	//fes 池子永远第二位
-	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
-		{star: 5, Prob: 150, pickUpCards: []int{228, 229, 230}},
-		{star: 5, Prob: 80, pickUpCards: []int{231}},
-		{star: 5, cardType: 1, rareType: 3, Prob: 3 * 8},
-		{star: 5, cardType: 2, rareType: 3, Prob: 5},
-		{star: 5, cardType: 1, rareType: 1, Prob: 146},
-		{star: 5, cardType: 2, rareType: 1, Prob: 195},
-		{star: 4, Prob: 700, pickUpCards: []int{241}},
-		{star: 4, cardType: 1, rareType: 1, Prob: 505},
-		{star: 4, cardType: 2, rareType: 1, Prob: 395},
-		{star: 3, cardType: 1, rareType: 1, Prob: 4700},
-		{star: 3, cardType: 2, rareType: 1, Prob: 3100},
-	}, topBannerUrl: "https://gamepedia.cursecdn.com/dragalialost_gamepedia_en/6/66/Gala_Dragalia_%28May_2020%29_Summon_Top_Banner.png?version=a9d11303eea27a11e68dcc78bce6012b"})
 	res = append(res, &cardMgrConfig{configs: []*CardSetConfig{
 		{star: 5, Prob: 80, pickUpCards: []int{194}},
 		{star: 5, cardType: 1, rareType: 1, Prob: 120},
