@@ -93,7 +93,7 @@ func main() {
 	model.Periodlycall(60*time.Second, func() {
 		fmt.Println("Server 60s tick ", time.Now().String())
 	})
-	//log.Println(" [x] Complete")
+	//fmt.Println(" [x] Complete")
 }
 
 func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanjiaExp *regexp.Regexp) {
@@ -102,7 +102,7 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 		gosocketio.GetUrl(site, port, false),
 		transport.GetDefaultWebsocketTransport())
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 	err = c.On("OnGroupMsgs", func(h *gosocketio.Channel, args model.Message) {
@@ -113,7 +113,7 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 
 	})
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 	err = c.On("OnFriendMsgs", func(h *gosocketio.Channel, args model.Message) {
@@ -133,22 +133,22 @@ func connect(buildCommand *regexp.Regexp, recruitexp *regexp.Regexp, recruitCanj
 
 	})
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 	err = c.On(gosocketio.OnDisconnection, func(h *gosocketio.Channel) {
-		log.Println("Disconnected")
+		fmt.Println("Disconnected")
 		fail <- true
 	})
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 	err = c.On(gosocketio.OnConnection, func(h *gosocketio.Channel) {
-		log.Println("连接成功")
+		fmt.Println("连接成功")
 	})
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 	time.Sleep(1 * time.Second)
@@ -190,7 +190,7 @@ func processGroupMsg(args model.Message, buildCommand *regexp.Regexp, recruitexp
 		mess.iotqqType 消息类型 string
 	*/
 	nickName := util.FixName(mess.FromNickName)
-	log.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
+	fmt.Println("群聊消息: ", mess.FromGroupID, nickName+"<"+strconv.FormatInt(mess.FromUserID, 10)+">: "+mess.Content)
 
 	if mess.FromUserID == 570966274 && util.KeyWordTrigger(mess.Content, "repeat") {
 		str := ""

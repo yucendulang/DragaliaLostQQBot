@@ -41,11 +41,13 @@ func (g *gachaBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 	if res := regex.FindStringSubmatch(req.Content); len(res) > 1 {
 		numStr := res[1]
 		res := chinese2digits.TakeNumberFromString(numStr)
-		//fmt.Printf("%+v,%t", res, res)
+		fmt.Printf("%+v,%t", res, res)
 		numDigit := res.(map[string]interface{})["replacedText"].(string)
 		if num, ok := strconv.Atoi(numDigit); ok == nil && num >= 1 {
 			req.ExtraInfo = num
 			return true, false
+		} else {
+			fmt.Println(ok)
 		}
 	}
 	return false, true
