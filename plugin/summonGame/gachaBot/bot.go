@@ -43,7 +43,7 @@ func (g *gachaBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 		res := chinese2digits.TakeNumberFromString(numStr)
 		//fmt.Printf("%+v,%t", res, res)
 		numDigit := res.(map[string]interface{})["replacedText"].(string)
-		if num, ok := strconv.Atoi(numDigit); ok == nil {
+		if num, ok := strconv.Atoi(numDigit); ok == nil && num >= 1 {
 			req.ExtraInfo = num
 			return true, false
 		}
