@@ -24,6 +24,7 @@ func (a *announceBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{}
 	out := "卡池变化:fes卡池出现概率增加,新加人物以及龙.按照官方卡池修正概率\n"
 	out += "新增功能:支持任意数量抽卡(测试中\n"
+	out += "进行单抽时候 如果账户里有转生券可以抽主线人物和活动人物\n"
 	res.Content = out
 
 	res2 := &plugin.Result{}

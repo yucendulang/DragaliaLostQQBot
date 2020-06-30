@@ -19,7 +19,7 @@ func SimAllIn(num, cardPoolIndex int, card []int) string {
 	for i := 0; i < max; i++ {
 		user := &userData.User{}
 		for j := 0; j < summonNum; j++ {
-			summon.TenSummonByCollection(user, cards.CardMgr.PickUp(cardPoolIndex))
+			summon.TenSummonByCollection(user, cards.GachaPoolCardMgr.PickUp(cardPoolIndex))
 		}
 		gachaThemAll := true
 		for _, cardIndex := range card {
@@ -52,7 +52,7 @@ func SimMustGet(card []int, cardPoolIndex int) string {
 		gachaThemAll := false
 		num := 10
 		for ; !gachaThemAll; num += 10 {
-			summon.TenSummonByCollection(user, cards.CardMgr.PickUp(cardPoolIndex))
+			summon.TenSummonByCollection(user, cards.GachaPoolCardMgr.PickUp(cardPoolIndex))
 			//fmt.Println(len(user.CardIndex))
 			gachaThemAll = true
 			for _, cardIndex := range card {
@@ -78,7 +78,7 @@ func SimParse(cardNames string, drawNum, cardPoolIndex int) (string, func() stri
 			return "", nil, fmt.Errorf("找不到%s,敬爱的殿下请检查是否输入错召唤对象%s", names[i], random.RandomGetSuffix())
 		}
 	}
-	pickUp := cards.CardMgr.PickUp(cardPoolIndex)
+	pickUp := cards.GachaPoolCardMgr.PickUp(cardPoolIndex)
 	if !pickUp.IsCardsExist(cardIndexes) {
 		return "", nil, fmt.Errorf("当前卡池找不到您要召唤的对象%s", random.RandomGetSuffix())
 	}

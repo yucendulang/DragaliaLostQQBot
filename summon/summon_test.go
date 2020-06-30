@@ -44,7 +44,7 @@ func TestTenSummonRate(t *testing.T) {
 			start := time.Now()
 			num1 := 0
 			user := &userData.User{SummonCardNum: 10000000}
-			coll := cards.CardMgr.PickUp(0)
+			coll := cards.GachaPoolCardMgr.PickUp(0)
 			for i := 0; i < summonNum; i++ {
 				gotRes := TenSummonByCollection(user, coll)
 				for _, card := range gotRes.Card {

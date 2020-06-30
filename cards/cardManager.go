@@ -7,7 +7,8 @@ import (
 
 type cardManager []*CardCollectionV2
 
-var CardMgr cardManager
+var GachaPoolCardMgr cardManager
+var NotGachaPoolCardMgr cardManager
 
 func (c cardManager) PickUpOne() *CardCollectionV2 {
 	ran1 := rand.Intn(4)
@@ -56,12 +57,30 @@ func init() {
 				continue
 			}
 			for _, cardSet := range cardCollection.cardSets {
-				if cardSet.star == card.Star && util.IntContain(card.rareType, cardSet.rareType) && cardSet.cardType == card.CardType {
+				if cardSet.star == card.Star && util.IntContain(card.RareType, cardSet.rareType) && cardSet.cardType == card.CardType {
 					cardSet.cards = append(cardSet.cards, card)
 					break
 				}
 			}
 		}
-		CardMgr = append(CardMgr, &cardCollection)
+		GachaPoolCardMgr = append(GachaPoolCardMgr, &cardCollection)
+	}
+
+	//初始化非扭蛋卡池
+	{
+		var cardCollection CardCollectionV2
+		cardCollection.cardSets = append(cardCollection.cardSets, &CardSet{
+			star:     0,
+			cardType: 0,
+			rareType: []int{RareTypeStory, RareTypeEvent},
+			Prob:     0,
+			cards:    []Card{},
+		})
+		for _, card := range Cards {
+			if util.IntContain(card.RareType, cardCollection.cardSets[0].rareType) {
+				cardCollection.cardSets[0].cards = append(cardCollection.cardSets[0].cards, card)
+			}
+		}
+		NotGachaPoolCardMgr = append(NotGachaPoolCardMgr, &cardCollection)
 	}
 }

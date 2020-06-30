@@ -63,6 +63,9 @@ func main() {
 	common.FiveStarDragonNum = cards.GetCardsNumByStarType(5, 2)
 	common.FourStarDragonNum = cards.GetCardsNumByStarType(4, 2)
 	common.ThreeStarDragonNum = cards.GetCardsNumByStarType(3, 2)
+	common.ThreeStarDragonNum = cards.GetCardsNumByStarType(3, 2)
+	common.GachaPoolNum = cards.GetCardsNumByrareType([]int{cards.RareTypePermanent, cards.RareTypeNotPermanent, cards.RareTypeGala})
+	common.NoGachaPoolNum = cards.GetCardsNumByrareType([]int{cards.RareTypeStory, cards.RareTypeEvent})
 
 	userData.UserDataLoad()
 	util.SignalNotify(userData.UserDataSave)

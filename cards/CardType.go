@@ -6,9 +6,20 @@ type Card struct {
 	Title    string
 	Water    int
 	CardType int //1 is character 2 is dragon
-	rareType int //1-common 2-限定 3-fes
+	RareType int //1-common(PERMANENT 2-限定(NOTPERMANENT 3-fes(GALA 4-story 5-event
 	IconUrl  string
 }
+
+type RareType int
+
+const (
+	RareTypePermanent int = iota + 1
+	RareTypeNotPermanent
+	RareTypeGala
+	RareTypeStory
+	RareTypeEvent
+	RareTypeCount
+)
 
 func (c Card) PrintStar() string {
 	var res string

@@ -85,7 +85,7 @@ func OneSummon(user *userData.User) (res *SummonRecord) {
 }
 
 func SingleSummon(user *userData.User, index int) (res *SummonRecord) {
-	return singleSummonByCollection(user, index, cards.CardMgr.PickUpOne())
+	return singleSummonByCollection(user, index, cards.GachaPoolCardMgr.PickUpOne())
 	//if user.UnHitNumber >= 100 && index == 0 {
 	//	var cardPoolsKey = []int{511, 512, 521, 522}
 	//	res.Card = append(res.Card, *splitSummon(cardPoolsKey))
@@ -189,7 +189,7 @@ func splitSummonV2(cardSets []*cards.CardSet) *SummonCard {
 }
 
 func TenSummon(user *userData.User) (res SummonRecord) {
-	cardColl := cards.CardMgr.PickUpOne()
+	cardColl := cards.GachaPoolCardMgr.PickUpOne()
 	for i := 0; i < 10; i++ {
 		summon := singleSummonByCollection(user, i, cardColl)
 		res.Card = append(res.Card, summon.Card...)
@@ -210,7 +210,7 @@ func TenSummonByCollection(user *userData.User, cardCollection *cards.CardCollec
 
 func GetMultiSummon(num int) func(user *userData.User) (res SummonRecord) {
 	return func(user *userData.User) (res SummonRecord) {
-		cardColl := cards.CardMgr.PickUpOne()
+		cardColl := cards.GachaPoolCardMgr.PickUpOne()
 		res.TopBannerUrl = cardColl.TopBannerUrl
 		for i := 0; i < num/10; i++ {
 			tenSummon := TenSummonByCollection(user, cardColl)
@@ -262,11 +262,13 @@ func (s *SummonRecord) ImageFormatV2(volunterNum int, water int) image.Image {
 	bgPng := GetImage("background")
 	//merge banner to bg
 	//fmt.Println(s.TopBannerUrl)
-	banner := GetCardImage(s.TopBannerUrl)
-	if banner == nil {
-		panic(s.Card[0].Title + s.TopBannerUrl)
+	if s.TopBannerUrl != "" {
+		banner := GetCardImage(s.TopBannerUrl)
+		if banner == nil {
+			panic(s.Card[0].Title + s.TopBannerUrl)
+		}
+		mergeTopBannerToBG(banner, bgPng)
 	}
-	mergeTopBannerToBG(banner, bgPng)
 
 	if len(s.Card) > 1 {
 		heightbase, height := 80, 100

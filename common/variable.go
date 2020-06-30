@@ -7,6 +7,7 @@ import (
 
 var FiveStarCharacterNum, FourStarCharacterNum, ThreeStarCharacterNum int
 var FiveStarDragonNum, FourStarDragonNum, ThreeStarDragonNum int
+var GachaPoolNum, NoGachaPoolNum int
 
 var VolunterMineProductPeriod = time.Hour * 6
 var BaseSSRProbality = 40

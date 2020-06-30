@@ -133,12 +133,8 @@ func (u *User) GetAccountInfo() string {
 
 func (u *User) GetCollection() string {
 	res := ""
-	//c := cards.GetCardsAnalysis(u.CardIndex)
-	//res += fmt.Sprintf("图鉴一览:五星角色%d/%d,四星角色%d/%d,三星角色%d/%d\n",
-	//	c[0], common.FiveStarCharacterNum, c[1], common.FourStarCharacterNum, c[2], common.ThreeStarCharacterNum)
-	//res += fmt.Sprintf("五星龙%d/%d,四星龙%d/%d,三星龙%d/%d",
-	//	c[3], common.FiveStarDragonNum, c[4], common.FourStarDragonNum, c[5], common.ThreeStarDragonNum)
-	res += fmt.Sprintf("图鉴完成度:%d/%d", len(u.CardIndex), len(cards.Cards)-1)
+	gachaNum, noGachaNum := cards.GetGachaCardsNum(u.CardIndex)
+	res += fmt.Sprintf("图鉴:蛋池完成度(%d/%d),主线/活动完成度(%d/%d)", gachaNum, common.GachaPoolNum, noGachaNum, common.NoGachaPoolNum)
 	return res
 }
 

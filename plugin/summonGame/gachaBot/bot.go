@@ -3,6 +3,7 @@ package gachaBot
 import (
 	"fmt"
 	"github.com/Wall-ee/chinese2digits/chinese2digits"
+	"iotqq-plugins-demo/Go/cards"
 	"iotqq-plugins-demo/Go/plugin"
 	"iotqq-plugins-demo/Go/random"
 	"iotqq-plugins-demo/Go/summon"
@@ -67,6 +68,23 @@ func (g *gachaBot) Process(req *plugin.Request) []*plugin.Result {
 		return res
 	} else {
 		user := userData.GetUser(req.Udid)
+		if user.RebornEggNumber >= 1 {
+			card := cards.NotGachaPoolCardMgr.PickUpOne().PickUpByStar(0)[0].PickOne()
+			res := new(summon.SummonRecord)
+			res.Card = append(res.Card, summon.SummonCard{
+				Card:     card,
+				New:      false,
+				StackNum: 1,
+			})
+			if !util.IntContain(card.ID, user.CardIndex) {
+				res.Card[0].New = true
+				user.CardIndex = append(user.CardIndex, card.ID)
+			}
+			user.RebornEggNumber--
+			userData.SaveUserByUDID(req.Udid)
+			img := res.ImageFormatV2(user.RebornEggNumber, user.Water)
+			return []*plugin.Result{{Pic: img, Content: "\n每一世的轮回都为了找到你~转生券消耗一张" + random.RandomGetSuffix()}}
+		}
 		if user.SummonCardNum >= 1 {
 			res := summon.OneSummon(user)
 			user.SummonCardNum--
