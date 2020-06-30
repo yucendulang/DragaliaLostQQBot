@@ -22,7 +22,7 @@ func (a *announceBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 
 func (a *announceBot) Process(req *plugin.Request) []*plugin.Result {
 	res := &plugin.Result{}
-	out := "卡池变化:fes卡池出现概率增加,新加人物以及龙,等官方头像和banner出现再换\n"
+	out := "卡池变化:fes卡池出现概率增加,新加人物以及龙.按照官方卡池修正概率\n"
 	out += "新增功能:支持任意数量抽卡(测试中\n"
 	res.Content = out
 

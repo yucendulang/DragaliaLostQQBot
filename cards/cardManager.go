@@ -56,7 +56,7 @@ func init() {
 				continue
 			}
 			for _, cardSet := range cardCollection.cardSets {
-				if cardSet.star == card.Star && cardSet.rareType == card.rareType && cardSet.cardType == card.CardType {
+				if cardSet.star == card.Star && util.IntContain(card.rareType, cardSet.rareType) && cardSet.cardType == card.CardType {
 					cardSet.cards = append(cardSet.cards, card)
 					break
 				}

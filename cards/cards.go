@@ -1,7 +1,6 @@
 package cards
 
 import (
-	"log"
 	"math/rand"
 )
 
@@ -16,15 +15,11 @@ var Cards []Card
 
 var PickupCards5StarCharacter CardSet
 
-type cardCollection map[int]*CardSet
-
-var CardCollection cardCollection
-
 type CardSet struct {
 	star     int
-	cardType int //1是character 2是Dragon
-	rareType int //1代表普池 2代表特选
-	Prob     int //10000进制 1%填100
+	cardType int   //1是character 2是Dragon
+	rareType []int //1代表普池 2代表特选
+	Prob     int   //10000进制 1%填100
 	cards    []Card
 }
 
@@ -521,40 +516,16 @@ func initCards() {
 		{ID: 244, Star: 5, Title: "利娜修", Water: 8500, CardType: 1, rareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
 		{ID: 245, Star: 5, Title: "凯特西", Water: 8500, CardType: 2, rareType: 3,
-			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-k3mhZgT3cSg4-go.png"},
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-hom3KdT8S28-28.png"},
 		{ID: 246, Star: 5, Title: "斯提克斯", Water: 8500, CardType: 2, rareType: 1,
-			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-9tsjZjT3cSg4-go.png"},
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-awy3KdT8S28-28.png"},
 		{ID: 247, Star: 5, Title: "尤金", Water: 8500, CardType: 1, rareType: 1,
-			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-cyv5Z13T3cSg4-go.png"},
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-kjsaKcT8S28-28.png"},
 		{ID: 248, Star: 5, Title: "凯瑟琳", Water: 8500, CardType: 1, rareType: 1,
-			IconUrl: "https://img.nga.178.com/attachments/mon_202006/28/hbQ5-2fsoZ14T3cSg4-go.png"},
+			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-4nhxKdT8S28-28.png"},
 		//{ID: 246, Star: 5, Title: "利娜修", Water: 8500, CardType: 1, rareType: 1,
 		//	IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
 	}
-	CardCollection = map[int]*CardSet{}
-	CardCollection[512] = &CardSet{star: 5, cardType: 1, rareType: 2, Prob: 100}
-	CardCollection[522] = &CardSet{star: 5, cardType: 2, rareType: 2, Prob: 80}
-	CardCollection[511] = &CardSet{star: 5, cardType: 1, rareType: 1, Prob: 100}
-	CardCollection[521] = &CardSet{star: 5, cardType: 2, rareType: 1, Prob: 120}
-
-	CardCollection[412] = &CardSet{star: 4, cardType: 1, rareType: 2, Prob: 350}
-	CardCollection[422] = &CardSet{star: 4, cardType: 2, rareType: 2, Prob: 350}
-	CardCollection[411] = &CardSet{star: 4, cardType: 1, rareType: 1, Prob: 505}
-	CardCollection[421] = &CardSet{star: 4, cardType: 2, rareType: 1, Prob: 395}
-
-	CardCollection[311] = &CardSet{star: 3, cardType: 1, rareType: 1, Prob: 4800}
-	CardCollection[321] = &CardSet{star: 3, cardType: 2, rareType: 1, Prob: 3200}
-
-	for _, card := range Cards {
-		key := 100*card.Star + 10*card.CardType + card.rareType
-		if _, ok := CardCollection[key]; ok {
-			CardCollection[key].cards = append(CardCollection[key].cards, card)
-		}
-	}
-}
-
-func SummonOne(key int) Card {
-	return getCardPool(key).PickOne()
 }
 
 func (c *CardSet) PickOne() Card {
@@ -577,9 +548,6 @@ func FindCardIndex(name []string) []int {
 	return res
 }
 
-func GetCardsNum(key int) int {
-	return len(getCardPool(key).cards)
-}
 func GetCardsNumByStarType(star, cardType int) int {
 	res := 0
 	for _, card := range Cards {
@@ -610,13 +578,4 @@ func GetCardsAnalysis(cardIndex []int) []int {
 		}
 	}
 	return res
-}
-
-func getCardPool(key int) *CardSet {
-	if value, ok := CardCollection[key]; ok {
-		return value
-	} else {
-		log.Panic("could not find")
-	}
-	return nil
 }
