@@ -24,3 +24,15 @@ func TestFindCardIndex(t *testing.T) {
 		})
 	}
 }
+
+func TestCards(t *testing.T) {
+	t.Run("look card", func(t *testing.T) {
+		res := 0
+		for _, card := range Cards {
+			if card.CardType == 1 {
+				res++
+			}
+		}
+		t.Log("五星总人数", res)
+	})
+}

@@ -15,6 +15,7 @@ import (
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/announceBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/collectorBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/gachaBot"
+	_ "iotqq-plugins-demo/Go/plugin/summonGame/miniGame/mosaicBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/probabilityCalBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/queryBot"
 	_ "iotqq-plugins-demo/Go/plugin/summonGame/rebornBot"
@@ -49,6 +50,8 @@ func main() {
 		common.QQ = os.Args[1]
 		i, _ := strconv.Atoi(os.Args[1])
 		common.QQInt = int64(i)
+	} else {
+		fmt.Println("无参数启动")
 	}
 
 	rand.Seed(time.Now().Unix())

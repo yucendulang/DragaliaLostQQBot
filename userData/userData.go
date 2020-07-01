@@ -30,6 +30,7 @@ type User struct {
 	AchievementList     []common.AchievementRecord
 	LastVolunterGetTime time.Time
 	Static              Static
+	MiniGame            MiniGame
 }
 
 type Static struct {
@@ -37,6 +38,16 @@ type Static struct {
 	VolunterReiceiveMax  int
 	RebornCount          int
 	VRTPeriod            int //VolunterReiceiveTimePeriod 金币矿山刷新之前的总赠券次数
+}
+
+type MiniGame struct {
+	Mosaic MosaicGame
+}
+
+type MosaicGame struct {
+	Answer    string
+	StartTime time.Time
+	Level     int
 }
 
 const userinfoPath = "./asset/userinfo"

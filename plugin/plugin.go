@@ -19,6 +19,7 @@ type Result struct {
 	PicUrl    string
 	Pic       image.Image
 	DelayFunc func() string
+	NoShuiYin bool
 }
 type Request struct {
 	Udid      int64
@@ -134,13 +135,16 @@ func (f Factory) Run(data model.Data, fn func(content, picUrl string)) {
 }
 
 func printShuiYin(res *Result, req *Request) string {
-	face := truetype.NewFace(common.Font, &truetype.Options{Size: 24})
+
 	dc := gg.NewContextForImage(res.Pic)
 	//dc.SetRGB(1, 1, 1)
 	//dc.Clear()
-	dc.SetFontFace(face)
-	dc.SetRGB(1, 1, 1)
-	dc.DrawStringAnchored("@"+req.NickName, float64(res.Pic.Bounds().Dx()), float64(res.Pic.Bounds().Dy()), 1, -0.3)
+	if !res.NoShuiYin {
+		face := truetype.NewFace(common.Font, &truetype.Options{Size: 24})
+		dc.SetFontFace(face)
+		dc.SetRGB(1, 1, 1)
+		dc.DrawStringAnchored("@"+req.NickName, float64(res.Pic.Bounds().Dx()), float64(res.Pic.Bounds().Dy()), 1, -0.3)
+	}
 	hash, _ := hashstructure.Hash(res.Pic, nil)
 
 	path := "/asset/summon/cache/"
