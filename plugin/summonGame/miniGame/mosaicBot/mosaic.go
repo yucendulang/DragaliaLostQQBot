@@ -23,11 +23,11 @@ var level = map[int]levelInfo{
 	1: {5, "初级", ""},
 	2: {8, "中级", ""},
 	3: {10, "高级", ""},
-	4: {16, "超级", ""},
-	5: {20, "入门", "真"},
-	6: {30, "中级", "真"},
-	7: {40, "高级", "真"},
-	8: {80, "超级", "真"},
+	4: {13, "超级", ""},
+	5: {16, "入门", "真"},
+	6: {20, "中级", "真"},
+	7: {26, "高级", "真"},
+	8: {40, "超级", "真"},
 }
 
 type levelInfo struct {
@@ -47,7 +47,7 @@ func (m *mosaicBot) IsTrigger(req *plugin.Request) (res bool, vNext bool) {
 func (m *mosaicBot) Process(req *plugin.Request) []*plugin.Result {
 	user := userData.GetUser(req.Udid)
 	//判断是否能开启游戏
-	water := 10000
+	water := 100000
 	if user.Water < water {
 		return []*plugin.Result{{Content: "需要10w💧参加耶梦加得的试炼" + random.RandomGetSuffix()}}
 	}
