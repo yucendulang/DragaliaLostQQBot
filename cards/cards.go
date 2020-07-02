@@ -526,7 +526,7 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-4nhxKdT8S28-28.png"},
 		{ID: 249, Star: 4, Title: "主人公", Water: 0, CardType: 1, RareType: RareTypeStory,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-eiamKdT8S28-28.png"},
-		{ID: 250, Star: 4, Title: "ljx", Water: 0, CardType: 1, RareType: RareTypeStory,
+		{ID: 250, Star: 4, Title: "莱姬希", Water: 0, CardType: 1, RareType: RareTypeStory,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201912/17/hbQ5-ihxbKfT8S28-28.png"},
 		{ID: 251, Star: 4, Title: "埃尔菲莉丝", Water: 0, CardType: 1, RareType: RareTypeStory,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-ebsjKdT8S28-28.png"},
