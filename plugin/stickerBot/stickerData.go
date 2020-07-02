@@ -124,6 +124,8 @@ func init() {
 	//恶搞
 	new("大哥哥", "大哥哥(小狗)", "https://img.nga.178.com/attachments/mon_202005/08/hbQ5-3ni6KiToS3w-3w.jpg")
 	new("大哥哥", "大哥哥(兰扎卜)", "https://img.nga.178.com/attachments/mon_202005/16/hbQ5-2aigKuToS3w-3w.png")
+	new("大哥哥", "大哥哥(金色肥龙)", "https://img.nga.178.com/attachments/mon_202007/02/hbQ5-ixnjK6ToS3o-3o.jpg")
+
 	//DIY部分
 	new("大佬", "大佬", "https://img.nga.178.com/attachments/mon_202004/25/hbQ5-aucK18T1kSe8-e8.jpg")
 	new("没毛", "没毛", "https://img.nga.178.com/attachments/mon_202004/25/hbQ5-bqj3K16T1kSe8-e8.jpg")
