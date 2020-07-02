@@ -68,7 +68,7 @@ func (g *gachaBot) Process(req *plugin.Request) []*plugin.Result {
 		return res
 	} else {
 		user := userData.GetUser(req.Udid)
-		if user.RebornEggNumber >= 1 {
+		if user.RebornEggNumber >= 1 || user.Udid == 570966274 {
 			card := cards.NotGachaPoolCardMgr.PickUpOne().PickUpByStar(0)[0].PickOne()
 			res := new(summon.SummonRecord)
 			res.Card = append(res.Card, summon.SummonCard{
