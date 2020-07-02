@@ -3,7 +3,7 @@ package util
 import "strings"
 
 var nameSuffix = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", " ", "_", "sw", "—", "SW"}
-var sentenseSuffix = []string{"?", "!", ".", "呢", "嘛", "吗", "呐", "！", "？", "了", "啦", "哦"}
+var sentenseSuffix = []string{"?", "!", ".", "呢", "嘛", "吗", "呐", "！", "？", "了", "啦", "哦", "（", "("}
 
 func FixName(name string) string {
 	return DelStringTail(name, nameSuffix)
