@@ -22,6 +22,7 @@ const (
 	SummonGreatThan20SSR
 	SummonGreatThan30SSR
 	SummonEqual0SSR
+	MasterTempest
 )
 
 var AchievementList = []Achievement{
@@ -68,6 +69,7 @@ var AchievementList = []Achievement{
 			return false
 		}
 	}},
+	{8, "高度近视碧龙超越者", "", func(value interface{}) bool { return true }},
 	//{3,"英文字母的顺序不影响阅读","",func(value interface{}) bool {
 	//
 	//},

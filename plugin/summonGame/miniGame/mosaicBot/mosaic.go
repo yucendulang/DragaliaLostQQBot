@@ -55,6 +55,7 @@ func (m *mosaicBot) Process(req *plugin.Request) []*plugin.Result {
 	if user.MiniGame.Mosaic.Level != 0 {
 		return []*plugin.Result{{Content: "好像你正在跟耶耶子玩耍" + random.RandomGetSuffix()}}
 	}
+	defer userData.SaveUserByUDID(req.Udid)
 	if time.Now().Sub(user.MiniGame.Mosaic.StartTime) > time.Minute*10 {
 		user.MiniGame.Mosaic = userData.MosaicGame{}
 	}
