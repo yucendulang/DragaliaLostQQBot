@@ -68,7 +68,8 @@ func (m *mosaicBot) Process(req *plugin.Request) []*plugin.Result {
 }
 
 func startMosaicGame(user *userData.User) (levelInfo, image.Image) {
-	card := cards.Cards[rand.Intn(len(cards.Cards))]
+	//todo 第0个cards没东西 roll到就panic 将来重构掉
+	card := cards.Cards[rand.Intn(len(cards.Cards)-1)+1]
 	img := summon.GetCardImage(card.IconUrl)
 	lv, ok := level[user.MiniGame.Mosaic.Level]
 	if !ok {
