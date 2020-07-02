@@ -506,7 +506,7 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_202003/27/hbQ5-bvdoKdT8S28-28.png"},
 		{ID: 239, Star: 5, Title: "库菈乌(Fes限定Ver.)", Water: 8500, CardType: 1, RareType: 3,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201907/27/hbQ5-dje9KeT8S28-28.png"},
-		{ID: 240, Star: 5, Title: "马斯(Fes限定Ver.)", Water: 8500, CardType: 2, RareType: 3,
+		{ID: 240, Star: 5, Title: "玛斯(Fes限定Ver.)", Water: 8500, CardType: 2, RareType: 3,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202004/25/hbQ5-kormKcT8S28-28.png"},
 		{ID: 241, Star: 4, Title: "悟净", Water: 2200, CardType: 1, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202005/29/hbQ5-8j0qKdT8S28-28.png"},
