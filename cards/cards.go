@@ -424,7 +424,7 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_201904/27/hbQ5-j4djKdT8S28-28.png"},
 		{ID: 198, Star: 5, Title: "菲约尔姆", Water: 8500, CardType: 1, RareType: 2,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201904/27/hbQ5-a2mwKdT8S28-28.png"},
-		{ID: 199, Star: 5, Title: "维罗妮卡", Water: 8500, CardType: 1, RareType: 2,
+		{ID: 199, Star: 5, Title: "维洛妮卡", Water: 8500, CardType: 1, RareType: 2,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201904/27/hbQ5-kibyKdT8S28-28.png"},
 		{ID: 200, Star: 5, Title: "阿迪斯(情人节Ver.)", Water: 8500, CardType: 1, RareType: 2,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202002/14/hbQ5-itx3KeT8S28-28.png"},
