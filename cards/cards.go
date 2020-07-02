@@ -518,7 +518,7 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/12/hbQ5-3if7KcT8S28-28.png"},
 		{ID: 245, Star: 5, Title: "凯特西", Water: 8500, CardType: 2, RareType: 3,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-hom3KdT8S28-28.png"},
-		{ID: 246, Star: 5, Title: "斯提克斯", Water: 8500, CardType: 2, RareType: 1,
+		{ID: 246, Star: 5, Title: "斯堤克斯", Water: 8500, CardType: 2, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-awy3KdT8S28-28.png"},
 		{ID: 247, Star: 5, Title: "尤金", Water: 8500, CardType: 1, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_202006/29/hbQ5-kjsaKcT8S28-28.png"},
