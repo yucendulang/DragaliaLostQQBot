@@ -36,11 +36,11 @@ func (m *answerBot) Process(req *plugin.Request) []*plugin.Result {
 		//oldlv := level[user.MiniGame.Mosaic.Level]
 		receive := int(math.Pow(2, float64(user.MiniGame.Mosaic.Level)))
 		content := fmt.Sprintf("\n终于看清了,是%s啊.收下%d🎟吧.\n",
-			user.MiniGame.Mosaic.Answer)
+			user.MiniGame.Mosaic.Answer, receive)
 		user.SummonCardNum += receive
 		user.MiniGame.Mosaic.Level++
 		lv, image := startMosaicGame(user)
-		content += fmt.Sprintf("开始%s耶梦加得的试炼 %s吧!\n输入名字\"xxx\"来告诉我这是谁吧!", lv.prefix, lv.desc)
+		content += fmt.Sprintf("%s开始%s耶梦加得的试炼 %s吧!\n输入名字\"xxx\"来告诉我这是谁吧!", req.NickName, lv.prefix, lv.desc)
 		return []*plugin.Result{{
 			Content:   content,
 			Pic:       image,
@@ -50,7 +50,7 @@ func (m *answerBot) Process(req *plugin.Request) []*plugin.Result {
 		ans := user.MiniGame.Mosaic.Answer
 		user.MiniGame.Mosaic = userData.MosaicGame{}
 		return []*plugin.Result{{
-			Content: fmt.Sprintf("看错了啊,是%s啊\n这些水滴我就收下了", ans),
+			Content: fmt.Sprintf("%s看错了啊,是%s啊\n这些水滴我就收下了", req.NickName, ans),
 		}}
 	}
 }

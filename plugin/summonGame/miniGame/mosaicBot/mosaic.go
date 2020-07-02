@@ -61,7 +61,7 @@ func (m *mosaicBot) Process(req *plugin.Request) []*plugin.Result {
 	lv, pic := startMosaicGame(user)
 	user.Water -= water
 	return []*plugin.Result{{
-		Content:   fmt.Sprintf("\n这个东西带上好晕啊,让我康康这是谁-%s耶梦加得的试炼 %s\n输入名字\"xxx\"来告诉我这是谁吧!", lv.prefix, lv.desc),
+		Content:   fmt.Sprintf("\n这个东西带上好晕啊,让我康康这是谁-%s耶梦加得的试炼 %s\n输入名字\"xxx\"%s来告诉我这是谁吧!", lv.prefix, lv.desc, req.NickName),
 		Pic:       pic,
 		NoShuiYin: true,
 	}}
