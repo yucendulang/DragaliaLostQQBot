@@ -228,7 +228,7 @@ func initCards() {
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-a6bqKcT8S28-28.png"},
 		{ID: 100, Star: 3, Title: "夏迪", Water: 150, CardType: 1, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-1c6vKdT8S28-28.png"},
-		{ID: 101, Star: 3, Title: "十太郎", Water: 150, CardType: 1, RareType: 1,
+		{ID: 101, Star: 3, Title: "十郎太", Water: 150, CardType: 1, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-csprKdT8S28-28.png"},
 		{ID: 102, Star: 3, Title: "雷克斯", Water: 150, CardType: 1, RareType: 1,
 			IconUrl: "https://img.nga.178.com/attachments/mon_201902/23/-mjkdpQ5-dz7tKdT8S28-28.png"},
