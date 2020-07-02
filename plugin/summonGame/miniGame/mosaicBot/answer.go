@@ -31,10 +31,13 @@ func (m *answerBot) Process(req *plugin.Request) []*plugin.Result {
 	user := userData.GetUser(req.Udid)
 	//str := regex.FindStringSubmatch(req.Content)
 	prefix := strings.Split(user.MiniGame.Mosaic.Answer, "(")
-	if req.Content == user.MiniGame.Mosaic.Answer || req.Content == prefix[0] {
+
+	if strings.TrimSpace(req.Content) == user.MiniGame.Mosaic.Answer || strings.TrimSpace(req.Content) == prefix[0] {
 		//oldlv := level[user.MiniGame.Mosaic.Level]
+		receive := int(math.Pow(2, float64(user.MiniGame.Mosaic.Level)))
 		content := fmt.Sprintf("\n终于看清了,是%s啊.收下%d🎟吧.\n",
-			user.MiniGame.Mosaic.Answer, int(math.Pow(2, float64(user.MiniGame.Mosaic.Level))))
+			user.MiniGame.Mosaic.Answer)
+		user.SummonCardNum += receive
 		user.MiniGame.Mosaic.Level++
 		lv, image := startMosaicGame(user)
 		content += fmt.Sprintf("开始%s耶梦加得的试炼 %s吧!\n输入名字\"xxx\"来告诉我这是谁吧!", lv.prefix, lv.desc)
