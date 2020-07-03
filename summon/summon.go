@@ -410,14 +410,16 @@ func productCardPng(card SummonCard) image.Image {
 			width = 41
 			start = 25
 		}
-		waterImg := GetImage(waterFileName)
-		waterImg = resize.Resize(width, 13, waterImg, resize.Lanczos3)
-		dpWaterMin := image.Point{X: start, Y: 60}
-		rectWater := image.Rectangle{
-			Min: dpWaterMin,
-			Max: dpWaterMin.Add(blackBar.Bounds().Max),
+		if waterFileName != "" {
+			waterImg := GetImage(waterFileName)
+			waterImg = resize.Resize(width, 13, waterImg, resize.Lanczos3)
+			dpWaterMin := image.Point{X: start, Y: 60}
+			rectWater := image.Rectangle{
+				Min: dpWaterMin,
+				Max: dpWaterMin.Add(blackBar.Bounds().Max),
+			}
+			draw.Draw(cardPng.(draw.Image), rectWater, waterImg, dp, draw.Over)
 		}
-		draw.Draw(cardPng.(draw.Image), rectWater, waterImg, dp, draw.Over)
 
 		dpNewMin := image.Point{X: 0, Y: 46}
 		dpNewMax := dpNewMin.Add(waterIconImage.Bounds().Max)
