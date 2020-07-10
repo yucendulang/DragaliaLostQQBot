@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/draw"
 	"math"
+	"math/rand"
 )
 
 // Wrapper for a tile image with average color attached
@@ -45,12 +46,24 @@ func Mosaic(target image.Image, sqSize int) (image.Image, error) {
 			bounds := image.Rect(x*sqSize, y*sqSize, (x+1)*sqSize, (y+1)*sqSize)
 			closest := image.NewRGBA(image.Rect(0, 0, sqSize, sqSize))
 			a := squares[y][x].avgColor
-			Clear(closest, color.RGBA{A: 255, R: uint8(a.r / 256), G: uint8(a.g / 256), B: uint8(a.b / 256)})
+			Clear(closest, color.RGBA{A: 255, R: randomColor(a.r), G: randomColor(a.g), B: randomColor(a.b)})
 			draw.Draw(dest, bounds, closest, image.ZP, draw.Over)
 		}
 	}
 
 	return dest, nil
+}
+
+func randomColor(color float64) uint8 {
+	res := int(color / 256)
+	res += rand.Intn(7) - 3
+	if res > math.MaxUint8 {
+		res = math.MaxUint8
+	}
+	if res < 0 {
+		res = 0
+	}
+	return uint8(res)
 }
 
 // Resize a list of images to the given size.

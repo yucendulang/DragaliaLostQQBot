@@ -77,7 +77,7 @@ func startMosaicGame(user *userData.User) (levelInfo, image.Image) {
 		user.MiniGame.Mosaic.Level = 1
 		lv = level[1]
 	}
-	pic, _ := util.Mosaic(img, lv.size)
+	pic, _ := util.Mosaic(img, lv.size-rand.Intn(1))
 	user.MiniGame.Mosaic.Answer = card.Title
 	user.MiniGame.Mosaic.StartTime = time.Now()
 	return lv, pic
